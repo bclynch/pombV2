@@ -1,0 +1,1152 @@
+"""A high precision floating point value represented as a string"""
+scalar BigFloat
+
+"""
+Boolean expression comparing fields on type "BigFloat"
+"""
+input BigFloatFilter {
+  eq: BigFloat
+  gt: BigFloat
+  gte: BigFloat
+  in: [BigFloat!]
+  is: FilterIs
+  lt: BigFloat
+  lte: BigFloat
+  neq: BigFloat
+}
+
+"""
+Boolean expression comparing fields on type "BigFloatList"
+"""
+input BigFloatListFilter {
+  containedBy: [BigFloat!]
+  contains: [BigFloat!]
+  eq: [BigFloat!]
+  is: FilterIs
+  overlaps: [BigFloat!]
+}
+
+"""An arbitrary size integer represented as a string"""
+scalar BigInt
+
+"""
+Boolean expression comparing fields on type "BigInt"
+"""
+input BigIntFilter {
+  eq: BigInt
+  gt: BigInt
+  gte: BigInt
+  in: [BigInt!]
+  is: FilterIs
+  lt: BigInt
+  lte: BigInt
+  neq: BigInt
+}
+
+"""
+Boolean expression comparing fields on type "BigIntList"
+"""
+input BigIntListFilter {
+  containedBy: [BigInt!]
+  contains: [BigInt!]
+  eq: [BigInt!]
+  is: FilterIs
+  overlaps: [BigInt!]
+}
+
+"""
+Boolean expression comparing fields on type "Boolean"
+"""
+input BooleanFilter {
+  eq: Boolean
+  is: FilterIs
+}
+
+"""
+Boolean expression comparing fields on type "BooleanList"
+"""
+input BooleanListFilter {
+  containedBy: [Boolean!]
+  contains: [Boolean!]
+  eq: [Boolean!]
+  is: FilterIs
+  overlaps: [Boolean!]
+}
+
+"""
+An opaque string using for tracking a position in results during pagination
+"""
+scalar Cursor
+
+"""A date without time information"""
+scalar Date
+
+"""
+Boolean expression comparing fields on type "Date"
+"""
+input DateFilter {
+  eq: Date
+  gt: Date
+  gte: Date
+  in: [Date!]
+  is: FilterIs
+  lt: Date
+  lte: Date
+  neq: Date
+}
+
+"""
+Boolean expression comparing fields on type "DateList"
+"""
+input DateListFilter {
+  containedBy: [Date!]
+  contains: [Date!]
+  eq: [Date!]
+  is: FilterIs
+  overlaps: [Date!]
+}
+
+"""A date and time"""
+scalar Datetime
+
+"""
+Boolean expression comparing fields on type "Datetime"
+"""
+input DatetimeFilter {
+  eq: Datetime
+  gt: Datetime
+  gte: Datetime
+  in: [Datetime!]
+  is: FilterIs
+  lt: Datetime
+  lte: Datetime
+  neq: Datetime
+}
+
+"""
+Boolean expression comparing fields on type "DatetimeList"
+"""
+input DatetimeListFilter {
+  containedBy: [Datetime!]
+  contains: [Datetime!]
+  eq: [Datetime!]
+  is: FilterIs
+  overlaps: [Datetime!]
+}
+
+enum FilterIs {
+  NULL
+  NOT_NULL
+}
+
+"""
+Boolean expression comparing fields on type "Float"
+"""
+input FloatFilter {
+  eq: Float
+  gt: Float
+  gte: Float
+  in: [Float!]
+  is: FilterIs
+  lt: Float
+  lte: Float
+  neq: Float
+}
+
+"""
+Boolean expression comparing fields on type "FloatList"
+"""
+input FloatListFilter {
+  containedBy: [Float!]
+  contains: [Float!]
+  eq: [Float!]
+  is: FilterIs
+  overlaps: [Float!]
+}
+
+"""
+Boolean expression comparing fields on type "ID"
+"""
+input IDFilter {
+  eq: ID
+}
+
+"""
+Boolean expression comparing fields on type "Int"
+"""
+input IntFilter {
+  eq: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  is: FilterIs
+  lt: Int
+  lte: Int
+  neq: Int
+}
+
+"""
+Boolean expression comparing fields on type "IntList"
+"""
+input IntListFilter {
+  containedBy: [Int!]
+  contains: [Int!]
+  eq: [Int!]
+  is: FilterIs
+  overlaps: [Int!]
+}
+
+"""A Javascript Object Notation value serialized as a string"""
+scalar JSON
+
+"""The root type for creating and mutating data"""
+type Mutation {
+  """Deletes zero or more records from the `photos` collection"""
+  deleteFromphotosCollection(
+    """Restricts the mutation's impact to records matching the criteria"""
+    filter: photosFilter
+
+    """
+    The maximum number of records in the collection permitted to be affected
+    """
+    atMost: Int! = 1
+  ): photosDeleteResponse!
+
+  """Deletes zero or more records from the `profiles` collection"""
+  deleteFromprofilesCollection(
+    """Restricts the mutation's impact to records matching the criteria"""
+    filter: profilesFilter
+
+    """
+    The maximum number of records in the collection permitted to be affected
+    """
+    atMost: Int! = 1
+  ): profilesDeleteResponse!
+
+  """Deletes zero or more records from the `trip_uploads` collection"""
+  deleteFromtrip_uploadsCollection(
+    """Restricts the mutation's impact to records matching the criteria"""
+    filter: trip_uploadsFilter
+
+    """
+    The maximum number of records in the collection permitted to be affected
+    """
+    atMost: Int! = 1
+  ): trip_uploadsDeleteResponse!
+
+  """Deletes zero or more records from the `trips` collection"""
+  deleteFromtripsCollection(
+    """Restricts the mutation's impact to records matching the criteria"""
+    filter: tripsFilter
+
+    """
+    The maximum number of records in the collection permitted to be affected
+    """
+    atMost: Int! = 1
+  ): tripsDeleteResponse!
+
+  """Adds one or more `photos` records to the collection"""
+  insertIntophotosCollection(objects: [photosInsertInput!]!): photosInsertResponse
+
+  """Adds one or more `profiles` records to the collection"""
+  insertIntoprofilesCollection(objects: [profilesInsertInput!]!): profilesInsertResponse
+
+  """Adds one or more `trip_uploads` records to the collection"""
+  insertIntotrip_uploadsCollection(objects: [trip_uploadsInsertInput!]!): trip_uploadsInsertResponse
+
+  """Adds one or more `trips` records to the collection"""
+  insertIntotripsCollection(objects: [tripsInsertInput!]!): tripsInsertResponse
+
+  """Updates zero or more records in the `photos` collection"""
+  updatephotosCollection(
+    """
+    Fields that are set will be updated for all records matching the `filter`
+    """
+    set: photosUpdateInput!
+
+    """Restricts the mutation's impact to records matching the criteria"""
+    filter: photosFilter
+
+    """
+    The maximum number of records in the collection permitted to be affected
+    """
+    atMost: Int! = 1
+  ): photosUpdateResponse!
+
+  """Updates zero or more records in the `profiles` collection"""
+  updateprofilesCollection(
+    """
+    Fields that are set will be updated for all records matching the `filter`
+    """
+    set: profilesUpdateInput!
+
+    """Restricts the mutation's impact to records matching the criteria"""
+    filter: profilesFilter
+
+    """
+    The maximum number of records in the collection permitted to be affected
+    """
+    atMost: Int! = 1
+  ): profilesUpdateResponse!
+
+  """Updates zero or more records in the `trip_uploads` collection"""
+  updatetrip_uploadsCollection(
+    """
+    Fields that are set will be updated for all records matching the `filter`
+    """
+    set: trip_uploadsUpdateInput!
+
+    """Restricts the mutation's impact to records matching the criteria"""
+    filter: trip_uploadsFilter
+
+    """
+    The maximum number of records in the collection permitted to be affected
+    """
+    atMost: Int! = 1
+  ): trip_uploadsUpdateResponse!
+
+  """Updates zero or more records in the `trips` collection"""
+  updatetripsCollection(
+    """
+    Fields that are set will be updated for all records matching the `filter`
+    """
+    set: tripsUpdateInput!
+
+    """Restricts the mutation's impact to records matching the criteria"""
+    filter: tripsFilter
+
+    """
+    The maximum number of records in the collection permitted to be affected
+    """
+    atMost: Int! = 1
+  ): tripsUpdateResponse!
+}
+
+"""Any type not handled by the type system"""
+scalar Opaque
+
+"""
+Boolean expression comparing fields on type "Opaque"
+"""
+input OpaqueFilter {
+  eq: Opaque
+  is: FilterIs
+}
+
+"""Defines a per-field sorting order"""
+enum OrderByDirection {
+  """Ascending order, nulls first"""
+  AscNullsFirst
+
+  """Ascending order, nulls last"""
+  AscNullsLast
+
+  """Descending order, nulls first"""
+  DescNullsFirst
+
+  """Descending order, nulls last"""
+  DescNullsLast
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+type photos {  id: UUID!
+  trip_id: UUID!
+  user_id: UUID!
+  r2_key_thumb: String
+  r2_key_large: String
+  blurhash: String
+  location: Opaque
+  captured_at: Datetime
+  created_at: Datetime
+  trips: trips
+  profiles: profiles
+}
+
+type photosConnection {
+  edges: [photosEdge!]!
+  pageInfo: PageInfo!
+}
+
+type photosDeleteResponse {
+  """Count of the records impacted by the mutation"""
+  affectedCount: Int!
+
+  """Array of records impacted by the mutation"""
+  records: [photos!]!
+}
+
+type photosEdge {
+  cursor: String!
+  node: photos!
+}
+
+input photosFilter {
+  id: UUIDFilter
+  trip_id: UUIDFilter
+  user_id: UUIDFilter
+  r2_key_thumb: StringFilter
+  r2_key_large: StringFilter
+  blurhash: StringFilter
+  location: OpaqueFilter
+  captured_at: DatetimeFilter
+  created_at: DatetimeFilter
+  """
+  Returns true only if all its inner filters are true, otherwise returns false
+  """
+  and: [photosFilter!]
+
+  """
+  Returns true if at least one of its inner filters is true, otherwise returns false
+  """
+  or: [photosFilter!]
+
+  """Negates a filter"""
+  not: photosFilter
+}
+
+input photosInsertInput {
+  id: UUID
+  trip_id: UUID
+  user_id: UUID
+  r2_key_thumb: String
+  r2_key_large: String
+  blurhash: String
+  location: Opaque
+  captured_at: Datetime
+  created_at: Datetime
+}
+
+type photosInsertResponse {
+  """Count of the records impacted by the mutation"""
+  affectedCount: Int!
+
+  """Array of records impacted by the mutation"""
+  records: [photos!]!
+}
+
+input photosOrderBy {
+  id: OrderByDirection
+  trip_id: OrderByDirection
+  user_id: OrderByDirection
+  r2_key_thumb: OrderByDirection
+  r2_key_large: OrderByDirection
+  blurhash: OrderByDirection
+  location: OrderByDirection
+  captured_at: OrderByDirection
+  created_at: OrderByDirection
+}
+
+input photosUpdateInput {
+  id: UUID
+  trip_id: UUID
+  user_id: UUID
+  r2_key_thumb: String
+  r2_key_large: String
+  blurhash: String
+  location: Opaque
+  captured_at: Datetime
+  created_at: Datetime
+}
+
+type photosUpdateResponse {
+  """Count of the records impacted by the mutation"""
+  affectedCount: Int!
+
+  """Array of records impacted by the mutation"""
+  records: [photos!]!
+}
+
+type profiles {  id: UUID!
+  username: String
+  avatar_url: String
+  updated_at: Datetime
+  tripsCollection(
+    """Query the first `n` records in the collection"""
+    first: Int
+
+    """Query the last `n` records in the collection"""
+    last: Int
+
+    """Query values in the collection before the provided cursor"""
+    before: Cursor
+
+    """Query values in the collection after the provided cursor"""
+    after: Cursor
+
+    """
+    Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.
+    """
+    offset: Int
+
+    """Filters to apply to the results set when querying from the collection"""
+    filter: tripsFilter
+
+    """Sort order to apply to the collection"""
+    orderBy: [tripsOrderBy!]
+  ): tripsConnection
+  trip_uploadsCollection(
+    """Query the first `n` records in the collection"""
+    first: Int
+
+    """Query the last `n` records in the collection"""
+    last: Int
+
+    """Query values in the collection before the provided cursor"""
+    before: Cursor
+
+    """Query values in the collection after the provided cursor"""
+    after: Cursor
+
+    """
+    Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.
+    """
+    offset: Int
+
+    """Filters to apply to the results set when querying from the collection"""
+    filter: trip_uploadsFilter
+
+    """Sort order to apply to the collection"""
+    orderBy: [trip_uploadsOrderBy!]
+  ): trip_uploadsConnection
+  photosCollection(
+    """Query the first `n` records in the collection"""
+    first: Int
+
+    """Query the last `n` records in the collection"""
+    last: Int
+
+    """Query values in the collection before the provided cursor"""
+    before: Cursor
+
+    """Query values in the collection after the provided cursor"""
+    after: Cursor
+
+    """
+    Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.
+    """
+    offset: Int
+
+    """Filters to apply to the results set when querying from the collection"""
+    filter: photosFilter
+
+    """Sort order to apply to the collection"""
+    orderBy: [photosOrderBy!]
+  ): photosConnection
+}
+
+type profilesConnection {
+  edges: [profilesEdge!]!
+  pageInfo: PageInfo!
+}
+
+type profilesDeleteResponse {
+  """Count of the records impacted by the mutation"""
+  affectedCount: Int!
+
+  """Array of records impacted by the mutation"""
+  records: [profiles!]!
+}
+
+type profilesEdge {
+  cursor: String!
+  node: profiles!
+}
+
+input profilesFilter {
+  id: UUIDFilter
+  username: StringFilter
+  avatar_url: StringFilter
+  updated_at: DatetimeFilter
+  """
+  Returns true only if all its inner filters are true, otherwise returns false
+  """
+  and: [profilesFilter!]
+
+  """
+  Returns true if at least one of its inner filters is true, otherwise returns false
+  """
+  or: [profilesFilter!]
+
+  """Negates a filter"""
+  not: profilesFilter
+}
+
+input profilesInsertInput {
+  id: UUID
+  username: String
+  avatar_url: String
+  updated_at: Datetime
+}
+
+type profilesInsertResponse {
+  """Count of the records impacted by the mutation"""
+  affectedCount: Int!
+
+  """Array of records impacted by the mutation"""
+  records: [profiles!]!
+}
+
+input profilesOrderBy {
+  id: OrderByDirection
+  username: OrderByDirection
+  avatar_url: OrderByDirection
+  updated_at: OrderByDirection
+}
+
+input profilesUpdateInput {
+  id: UUID
+  username: String
+  avatar_url: String
+  updated_at: Datetime
+}
+
+type profilesUpdateResponse {
+  """Count of the records impacted by the mutation"""
+  affectedCount: Int!
+
+  """Array of records impacted by the mutation"""
+  records: [profiles!]!
+}
+
+"""The root type for querying data"""
+type Query {
+  """A pagable collection of type `photos`"""
+  photosCollection(
+    """Query the first `n` records in the collection"""
+    first: Int
+
+    """Query the last `n` records in the collection"""
+    last: Int
+
+    """Query values in the collection before the provided cursor"""
+    before: Cursor
+
+    """Query values in the collection after the provided cursor"""
+    after: Cursor
+
+    """
+    Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.
+    """
+    offset: Int
+
+    """Filters to apply to the results set when querying from the collection"""
+    filter: photosFilter
+
+    """Sort order to apply to the collection"""
+    orderBy: [photosOrderBy!]
+  ): photosConnection
+
+  """A pagable collection of type `profiles`"""
+  profilesCollection(
+    """Query the first `n` records in the collection"""
+    first: Int
+
+    """Query the last `n` records in the collection"""
+    last: Int
+
+    """Query values in the collection before the provided cursor"""
+    before: Cursor
+
+    """Query values in the collection after the provided cursor"""
+    after: Cursor
+
+    """
+    Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.
+    """
+    offset: Int
+
+    """Filters to apply to the results set when querying from the collection"""
+    filter: profilesFilter
+
+    """Sort order to apply to the collection"""
+    orderBy: [profilesOrderBy!]
+  ): profilesConnection
+
+  """A pagable collection of type `spatial_ref_sys`"""
+  spatial_ref_sysCollection(
+    """Query the first `n` records in the collection"""
+    first: Int
+
+    """Query the last `n` records in the collection"""
+    last: Int
+
+    """Query values in the collection before the provided cursor"""
+    before: Cursor
+
+    """Query values in the collection after the provided cursor"""
+    after: Cursor
+
+    """
+    Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.
+    """
+    offset: Int
+
+    """Filters to apply to the results set when querying from the collection"""
+    filter: spatial_ref_sysFilter
+
+    """Sort order to apply to the collection"""
+    orderBy: [spatial_ref_sysOrderBy!]
+  ): spatial_ref_sysConnection
+
+  """A pagable collection of type `trip_uploads`"""
+  trip_uploadsCollection(
+    """Query the first `n` records in the collection"""
+    first: Int
+
+    """Query the last `n` records in the collection"""
+    last: Int
+
+    """Query values in the collection before the provided cursor"""
+    before: Cursor
+
+    """Query values in the collection after the provided cursor"""
+    after: Cursor
+
+    """
+    Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.
+    """
+    offset: Int
+
+    """Filters to apply to the results set when querying from the collection"""
+    filter: trip_uploadsFilter
+
+    """Sort order to apply to the collection"""
+    orderBy: [trip_uploadsOrderBy!]
+  ): trip_uploadsConnection
+
+  """A pagable collection of type `trips`"""
+  tripsCollection(
+    """Query the first `n` records in the collection"""
+    first: Int
+
+    """Query the last `n` records in the collection"""
+    last: Int
+
+    """Query values in the collection before the provided cursor"""
+    before: Cursor
+
+    """Query values in the collection after the provided cursor"""
+    after: Cursor
+
+    """
+    Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.
+    """
+    offset: Int
+
+    """Filters to apply to the results set when querying from the collection"""
+    filter: tripsFilter
+
+    """Sort order to apply to the collection"""
+    orderBy: [tripsOrderBy!]
+  ): tripsConnection
+}
+
+type spatial_ref_sys {  srid: Int!
+  auth_name: String
+  auth_srid: Int
+  srtext: String
+  proj4text: String
+}
+
+type spatial_ref_sysConnection {
+  edges: [spatial_ref_sysEdge!]!
+  pageInfo: PageInfo!
+}
+
+type spatial_ref_sysEdge {
+  cursor: String!
+  node: spatial_ref_sys!
+}
+
+input spatial_ref_sysFilter {
+  srid: IntFilter
+  auth_name: StringFilter
+  auth_srid: IntFilter
+  srtext: StringFilter
+  proj4text: StringFilter
+  """
+  Returns true only if all its inner filters are true, otherwise returns false
+  """
+  and: [spatial_ref_sysFilter!]
+
+  """
+  Returns true if at least one of its inner filters is true, otherwise returns false
+  """
+  or: [spatial_ref_sysFilter!]
+
+  """Negates a filter"""
+  not: spatial_ref_sysFilter
+}
+
+input spatial_ref_sysOrderBy {
+  srid: OrderByDirection
+  auth_name: OrderByDirection
+  auth_srid: OrderByDirection
+  srtext: OrderByDirection
+  proj4text: OrderByDirection
+}
+
+"""
+Boolean expression comparing fields on type "String"
+"""
+input StringFilter {
+  eq: String
+  gt: String
+  gte: String
+  ilike: String
+  in: [String!]
+  iregex: String
+  is: FilterIs
+  like: String
+  lt: String
+  lte: String
+  neq: String
+  regex: String
+  startsWith: String
+}
+
+"""
+Boolean expression comparing fields on type "StringList"
+"""
+input StringListFilter {
+  containedBy: [String!]
+  contains: [String!]
+  eq: [String!]
+  is: FilterIs
+  overlaps: [String!]
+}
+
+"""A time without date information"""
+scalar Time
+
+"""
+Boolean expression comparing fields on type "Time"
+"""
+input TimeFilter {
+  eq: Time
+  gt: Time
+  gte: Time
+  in: [Time!]
+  is: FilterIs
+  lt: Time
+  lte: Time
+  neq: Time
+}
+
+"""
+Boolean expression comparing fields on type "TimeList"
+"""
+input TimeListFilter {
+  containedBy: [Time!]
+  contains: [Time!]
+  eq: [Time!]
+  is: FilterIs
+  overlaps: [Time!]
+}
+
+type trip_uploads {  id: UUID!
+  trip_id: UUID!
+  user_id: UUID!
+  filename: String!
+  r2_key: String!
+  file_size_bytes: BigInt
+  raw_geometry: Opaque
+  created_at: Datetime
+  trips: trips
+  profiles: profiles
+}
+
+type trip_uploadsConnection {
+  edges: [trip_uploadsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type trip_uploadsDeleteResponse {
+  """Count of the records impacted by the mutation"""
+  affectedCount: Int!
+
+  """Array of records impacted by the mutation"""
+  records: [trip_uploads!]!
+}
+
+type trip_uploadsEdge {
+  cursor: String!
+  node: trip_uploads!
+}
+
+input trip_uploadsFilter {
+  id: UUIDFilter
+  trip_id: UUIDFilter
+  user_id: UUIDFilter
+  filename: StringFilter
+  r2_key: StringFilter
+  file_size_bytes: BigIntFilter
+  raw_geometry: OpaqueFilter
+  created_at: DatetimeFilter
+  """
+  Returns true only if all its inner filters are true, otherwise returns false
+  """
+  and: [trip_uploadsFilter!]
+
+  """
+  Returns true if at least one of its inner filters is true, otherwise returns false
+  """
+  or: [trip_uploadsFilter!]
+
+  """Negates a filter"""
+  not: trip_uploadsFilter
+}
+
+input trip_uploadsInsertInput {
+  id: UUID
+  trip_id: UUID
+  user_id: UUID
+  filename: String
+  r2_key: String
+  file_size_bytes: BigInt
+  raw_geometry: Opaque
+  created_at: Datetime
+}
+
+type trip_uploadsInsertResponse {
+  """Count of the records impacted by the mutation"""
+  affectedCount: Int!
+
+  """Array of records impacted by the mutation"""
+  records: [trip_uploads!]!
+}
+
+input trip_uploadsOrderBy {
+  id: OrderByDirection
+  trip_id: OrderByDirection
+  user_id: OrderByDirection
+  filename: OrderByDirection
+  r2_key: OrderByDirection
+  file_size_bytes: OrderByDirection
+  raw_geometry: OrderByDirection
+  created_at: OrderByDirection
+}
+
+input trip_uploadsUpdateInput {
+  id: UUID
+  trip_id: UUID
+  user_id: UUID
+  filename: String
+  r2_key: String
+  file_size_bytes: BigInt
+  raw_geometry: Opaque
+  created_at: Datetime
+}
+
+type trip_uploadsUpdateResponse {
+  """Count of the records impacted by the mutation"""
+  affectedCount: Int!
+
+  """Array of records impacted by the mutation"""
+  records: [trip_uploads!]!
+}
+
+type trips {  id: UUID!
+  user_id: UUID!
+  name: String!
+  description: String
+  start_date: Datetime
+  end_date: Datetime
+  summary_geometry: Opaque
+  bounds_min_lat: Float
+  bounds_min_lng: Float
+  bounds_max_lat: Float
+  bounds_max_lng: Float
+  is_published: Boolean
+  created_at: Datetime
+  profiles: profiles
+  trip_uploadsCollection(
+    """Query the first `n` records in the collection"""
+    first: Int
+
+    """Query the last `n` records in the collection"""
+    last: Int
+
+    """Query values in the collection before the provided cursor"""
+    before: Cursor
+
+    """Query values in the collection after the provided cursor"""
+    after: Cursor
+
+    """
+    Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.
+    """
+    offset: Int
+
+    """Filters to apply to the results set when querying from the collection"""
+    filter: trip_uploadsFilter
+
+    """Sort order to apply to the collection"""
+    orderBy: [trip_uploadsOrderBy!]
+  ): trip_uploadsConnection
+  photosCollection(
+    """Query the first `n` records in the collection"""
+    first: Int
+
+    """Query the last `n` records in the collection"""
+    last: Int
+
+    """Query values in the collection before the provided cursor"""
+    before: Cursor
+
+    """Query values in the collection after the provided cursor"""
+    after: Cursor
+
+    """
+    Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.
+    """
+    offset: Int
+
+    """Filters to apply to the results set when querying from the collection"""
+    filter: photosFilter
+
+    """Sort order to apply to the collection"""
+    orderBy: [photosOrderBy!]
+  ): photosConnection
+}
+
+type tripsConnection {
+  edges: [tripsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type tripsDeleteResponse {
+  """Count of the records impacted by the mutation"""
+  affectedCount: Int!
+
+  """Array of records impacted by the mutation"""
+  records: [trips!]!
+}
+
+type tripsEdge {
+  cursor: String!
+  node: trips!
+}
+
+input tripsFilter {
+  id: UUIDFilter
+  user_id: UUIDFilter
+  name: StringFilter
+  description: StringFilter
+  start_date: DatetimeFilter
+  end_date: DatetimeFilter
+  summary_geometry: OpaqueFilter
+  bounds_min_lat: FloatFilter
+  bounds_min_lng: FloatFilter
+  bounds_max_lat: FloatFilter
+  bounds_max_lng: FloatFilter
+  is_published: BooleanFilter
+  created_at: DatetimeFilter
+  """
+  Returns true only if all its inner filters are true, otherwise returns false
+  """
+  and: [tripsFilter!]
+
+  """
+  Returns true if at least one of its inner filters is true, otherwise returns false
+  """
+  or: [tripsFilter!]
+
+  """Negates a filter"""
+  not: tripsFilter
+}
+
+input tripsInsertInput {
+  id: UUID
+  user_id: UUID
+  name: String
+  description: String
+  start_date: Datetime
+  end_date: Datetime
+  summary_geometry: Opaque
+  bounds_min_lat: Float
+  bounds_min_lng: Float
+  bounds_max_lat: Float
+  bounds_max_lng: Float
+  is_published: Boolean
+  created_at: Datetime
+}
+
+type tripsInsertResponse {
+  """Count of the records impacted by the mutation"""
+  affectedCount: Int!
+
+  """Array of records impacted by the mutation"""
+  records: [trips!]!
+}
+
+input tripsOrderBy {
+  id: OrderByDirection
+  user_id: OrderByDirection
+  name: OrderByDirection
+  description: OrderByDirection
+  start_date: OrderByDirection
+  end_date: OrderByDirection
+  summary_geometry: OrderByDirection
+  bounds_min_lat: OrderByDirection
+  bounds_min_lng: OrderByDirection
+  bounds_max_lat: OrderByDirection
+  bounds_max_lng: OrderByDirection
+  is_published: OrderByDirection
+  created_at: OrderByDirection
+}
+
+input tripsUpdateInput {
+  id: UUID
+  user_id: UUID
+  name: String
+  description: String
+  start_date: Datetime
+  end_date: Datetime
+  summary_geometry: Opaque
+  bounds_min_lat: Float
+  bounds_min_lng: Float
+  bounds_max_lat: Float
+  bounds_max_lng: Float
+  is_published: Boolean
+  created_at: Datetime
+}
+
+type tripsUpdateResponse {
+  """Count of the records impacted by the mutation"""
+  affectedCount: Int!
+
+  """Array of records impacted by the mutation"""
+  records: [trips!]!
+}
+
+"""A universally unique identifier"""
+scalar UUID
+
+"""
+Boolean expression comparing fields on type "UUID"
+"""
+input UUIDFilter {
+  eq: UUID
+  in: [UUID!]
+  is: FilterIs
+  neq: UUID
+}
+
+"""
+Boolean expression comparing fields on type "UUIDList"
+"""
+input UUIDListFilter {
+  containedBy: [UUID!]
+  contains: [UUID!]
+  eq: [UUID!]
+  is: FilterIs
+  overlaps: [UUID!]
+}
+

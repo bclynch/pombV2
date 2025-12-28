@@ -1,3 +1,20 @@
+# POMB
+
+## Scripts
+
+Run iOS app + watched relay compiler:
+
+`npm run dev:mobile`
+
+Run web app + watched relay compiler:
+
+`npm run dev:web`
+
+
+
+
+
+
 # Turborepo starter
 
 This Turborepo starter is maintained by the Turborepo core team.
