@@ -1,23 +1,26 @@
-import { RelayProvider } from "./components/RelayProvider";
-import { TripsList } from "./components/TripsList";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider, MediaQueryProvider } from "@coinbase/cds-web/system";
-import { defaultTheme } from '@coinbase/cds-web/themes/defaultTheme';
-import { Button } from "@coinbase/cds-web/buttons";
+import { defaultTheme } from "@coinbase/cds-web/themes/defaultTheme";
+import { AuthProvider } from "./lib/AuthContext";
+import { HomePage } from "./pages/HomePage";
+import { LoginPage } from "./pages/LoginPage";
+import { SignUpPage } from "./pages/SignUpPage";
 
 function App() {
   return (
-    <MediaQueryProvider>
-      <ThemeProvider theme={defaultTheme} activeColorScheme="light">
-        <RelayProvider>
-          <div style={{ padding: "16px" }}>
-            <Button onClick={() => alert("CDS Works!")}>
-              Test CDS Button
-            </Button>
-          </div>
-          <TripsList />
-        </RelayProvider>
-      </ThemeProvider>
-    </MediaQueryProvider>
+    <BrowserRouter>
+      <MediaQueryProvider>
+        <ThemeProvider theme={defaultTheme} activeColorScheme="light">
+          <AuthProvider>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
+            </Routes>
+          </AuthProvider>
+        </ThemeProvider>
+      </MediaQueryProvider>
+    </BrowserRouter>
   );
 }
 

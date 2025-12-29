@@ -1,7 +1,7 @@
 import { ReactNode, Suspense } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
 import { ActivityIndicator, View } from "react-native";
-import { relayEnvironment } from "../lib/supabase";
+import { relayEnvironment } from "@/lib/supabase";
 
 type Props = {
   children: ReactNode;

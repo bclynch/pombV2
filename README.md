@@ -13,7 +13,6 @@ Run web app + watched relay compiler:
 
 ## TODO
 
-- Add signup/sign in
 - Create cloudflare r2 bucket
 - Upload gpx functionality
 - Update db geojson stuff
@@ -33,6 +32,7 @@ Run web app + watched relay compiler:
 - Add Relay consumption
 - Add maps to both apps
 - Add CDS to both apps
+- Add signup/sign in
 
 
 

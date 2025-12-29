@@ -1,8 +1,8 @@
 import { useLazyLoadQuery } from "react-relay";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 // Query defined in ../graphql/queries.ts - run `npm run relay` after changes
-import type { queriesTripsListQuery } from "../graphql/__generated__/queriesTripsListQuery.graphql";
-import TripsListQueryNode from "../graphql/__generated__/queriesTripsListQuery.graphql";
+import type { queriesTripsListQuery } from "@/graphql/__generated__/queriesTripsListQuery.graphql";
+import TripsListQueryNode from "@/graphql/__generated__/queriesTripsListQuery.graphql";
 import { TripMap } from "./TripMap";
 import type { Feature, LineString } from "geojson";
 

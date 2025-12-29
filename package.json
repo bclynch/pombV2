@@ -2,7 +2,8 @@
   "name": "pomb",
   "private": true,
   "overrides": {
-    "react": "19.1.0"
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
   },
   "scripts": {
     "build": "turbo run build",
@@ -37,7 +38,8 @@
     "packages/*"
   ],
   "dependencies": {
-    "react": "^19.1.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
     "react-native-navigation-bar-color": "^2.0.2",
     "react-relay": "^20.1.1",
     "relay-runtime": "^20.1.1"

@@ -13,11 +13,13 @@
     "@coinbase/cds-icons": "^5.9.0",
     "@coinbase/cds-web": "^8.34.1",
     "@pomb/common": "^0.0.0",
+    "@supabase/supabase-js": "^2.89.0",
     "framer-motion": "^10.18.0",
     "maplibre-gl": "^5.15.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
     "react-relay": "^20.1.1",
+    "react-router-dom": "^7.11.0",
     "relay-runtime": "^20.1.1"
   },
   "devDependencies": {
