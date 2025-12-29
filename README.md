@@ -11,6 +11,28 @@ Run web app + watched relay compiler:
 `npm run dev:web`
 
 
+## TODO
+
+- Add signup/sign in
+- Create cloudflare r2 bucket
+- Upload gpx functionality
+- Update db geojson stuff
+- Upload pics for a trip
+  - attaching to gpx somehow 
+- Deploy to cloudflare pages
+  - Wire up deploy on commit
+- Deploy to google play store   
+- Add domain for maptiler API key once it's deployed
+- Add domain for R2 bucket once deployed
+
+## Done
+
+- Create monorepo
+- Create Supabase integration
+- Initial schema
+- Add Relay consumption
+- Add maps to both apps
+- Add CDS to both apps
 
 
 

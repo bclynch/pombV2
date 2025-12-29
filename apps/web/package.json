@@ -10,7 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@coinbase/cds-icons": "^5.9.0",
+    "@coinbase/cds-web": "^8.34.1",
     "@pomb/common": "^0.0.0",
+    "framer-motion": "^10.18.0",
     "maplibre-gl": "^5.15.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

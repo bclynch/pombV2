@@ -4,11 +4,13 @@
   "main": "index.ts",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web"
   },
   "dependencies": {
+    "@coinbase/cds-icons": "^5.9.0",
+    "@coinbase/cds-mobile": "^8.34.1",
     "@maplibre/maplibre-react-native": "^10.4.2",
     "@pomb/common": "*",
     "@react-native-async-storage/async-storage": "^2.1.2",
