@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9dfba9e3a59beaa23cd04c5acc58d63f>>
+ * @generated SignedSource<<e848876109f18505ef98c10b633871d0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,11 +16,16 @@ export type queriesTripsListQuery$data = {
   readonly tripsCollection: {
     readonly edges: ReadonlyArray<{
       readonly node: {
+        readonly bounds_max_lat: number | null | undefined;
+        readonly bounds_max_lng: number | null | undefined;
+        readonly bounds_min_lat: number | null | undefined;
+        readonly bounds_min_lng: number | null | undefined;
         readonly created_at: any | null | undefined;
         readonly description: string | null | undefined;
         readonly id: any;
         readonly is_published: boolean | null | undefined;
         readonly name: string;
+        readonly trips_summary_geometry_geojson: string | null | undefined;
       };
     }>;
   } | null | undefined;
@@ -103,6 +108,41 @@ v1 = [
                 "kind": "ScalarField",
                 "name": "created_at",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "trips_summary_geometry_geojson",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "bounds_min_lat",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "bounds_min_lng",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "bounds_max_lat",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "bounds_max_lng",
+                "storageKey": null
               }
             ],
             "storageKey": null
@@ -132,16 +172,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "d313961d81882c4b2600492837509710",
+    "cacheID": "379e8d60eae73ac3966c01fdc973ca20",
     "id": null,
     "metadata": {},
     "name": "queriesTripsListQuery",
     "operationKind": "query",
-    "text": "query queriesTripsListQuery(\n  $first: Int!\n) {\n  tripsCollection(first: $first) {\n    edges {\n      node {\n        id\n        name\n        description\n        is_published\n        created_at\n      }\n    }\n  }\n}\n"
+    "text": "query queriesTripsListQuery(\n  $first: Int!\n) {\n  tripsCollection(first: $first) {\n    edges {\n      node {\n        id\n        name\n        description\n        is_published\n        created_at\n        trips_summary_geometry_geojson\n        bounds_min_lat\n        bounds_min_lng\n        bounds_max_lat\n        bounds_max_lng\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "0650225242ce8dbba99b6cf2064877a8";
+(node as any).hash = "5c332410f8794ae65f165f98b3f3bf33";
 
 export default node;

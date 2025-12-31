@@ -1,26 +1,44 @@
 import { useEffect, useRef } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import type { Feature, LineString } from "geojson";
+import type { Feature, LineString, MultiLineString, Position } from "geojson";
 
 type TripMapProps = {
-  geojson: Feature<LineString>;
+  geojson: Feature<LineString | MultiLineString>;
+  bounds?: {
+    minLat: number;
+    minLng: number;
+    maxLat: number;
+    maxLng: number;
+  };
   style?: React.CSSProperties;
 };
 
 const MAPTILER_API_KEY = import.meta.env.VITE_MAPTILER_API_KEY;
 
-export function TripMap({ geojson, style }: TripMapProps) {
+export function TripMap({ geojson, bounds: propBounds, style }: TripMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
+
+  // Get first coordinate for initial center
+  const getFirstCoordinate = (): Position => {
+    if (geojson.geometry.type === "LineString") {
+      return geojson.geometry.coordinates[0] || [-122.4194, 37.7749];
+    } else if (geojson.geometry.type === "MultiLineString") {
+      return geojson.geometry.coordinates[0]?.[0] || [-122.4194, 37.7749];
+    }
+    return [-122.4194, 37.7749];
+  };
 
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
 
+    const firstCoord = getFirstCoordinate();
+
     map.current = new maplibregl.Map({
       container: mapContainer.current,
       style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${MAPTILER_API_KEY}`,
-      center: geojson.geometry.coordinates[0],
+      center: firstCoord as [number, number],
       zoom: 12,
     });
 
@@ -46,26 +64,44 @@ export function TripMap({ geojson, style }: TripMapProps) {
         },
       });
 
-      // Fit map to the line bounds
-      const coordinates = geojson.geometry.coordinates;
-      const bounds = coordinates.reduce(
-        (bounds, coord) => bounds.extend(coord as [number, number]),
-        new maplibregl.LngLatBounds(coordinates[0], coordinates[0])
-      );
+      // Fit map to bounds
+      if (propBounds) {
+        map.current.fitBounds(
+          [
+            [propBounds.minLng, propBounds.minLat],
+            [propBounds.maxLng, propBounds.maxLat],
+          ],
+          { padding: 50 }
+        );
+      } else {
+        // Calculate bounds from geometry
+        const allCoords: Position[] = [];
+        if (geojson.geometry.type === "LineString") {
+          allCoords.push(...geojson.geometry.coordinates);
+        } else if (geojson.geometry.type === "MultiLineString") {
+          geojson.geometry.coordinates.forEach((line) => allCoords.push(...line));
+        }
 
-      map.current.fitBounds(bounds, { padding: 50 });
+        if (allCoords.length > 0) {
+          const bounds = allCoords.reduce(
+            (bounds, coord) => bounds.extend(coord as [number, number]),
+            new maplibregl.LngLatBounds(allCoords[0] as [number, number], allCoords[0] as [number, number])
+          );
+          map.current.fitBounds(bounds, { padding: 50 });
+        }
+      }
     });
 
     return () => {
       map.current?.remove();
       map.current = null;
     };
-  }, [geojson]);
+  }, [geojson, propBounds]);
 
   return (
     <div
       ref={mapContainer}
-      style={{ width: "100%", height: "400px", ...style }}
+      style={{ width: "100%", height: "300px", ...style }}
     />
   );
 }

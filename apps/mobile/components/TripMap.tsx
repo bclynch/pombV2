@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 import {
   MapView,
@@ -7,43 +7,60 @@ import {
   LineLayer,
   type CameraRef,
 } from "@maplibre/maplibre-react-native";
-import type { Feature, LineString } from "geojson";
+import * as turf from "@turf/turf";
+import type { Feature, LineString, MultiLineString, Position } from "geojson";
 
 type TripMapProps = {
-  geojson: Feature<LineString>;
+  geojson: Feature<LineString | MultiLineString>;
+  bounds?: {
+    minLat: number;
+    minLng: number;
+    maxLat: number;
+    maxLng: number;
+  };
   style?: ViewStyle;
 };
 
 const MAPTILER_API_KEY = process.env.EXPO_PUBLIC_MAPTILER_API_KEY;
 
-export function TripMap({ geojson, style }: TripMapProps) {
+export function TripMap({ geojson, bounds: propBounds, style }: TripMapProps) {
   const cameraRef = useRef<CameraRef>(null);
 
+  // Calculate bounds from geojson or use provided bounds
+  const bounds = useMemo(() => {
+    if (propBounds) {
+      return propBounds;
+    }
+
+    const bbox = turf.bbox(geojson);
+    return {
+      minLng: bbox[0],
+      minLat: bbox[1],
+      maxLng: bbox[2],
+      maxLat: bbox[3],
+    };
+  }, [geojson, propBounds]);
+
+  // Get the first coordinate for initial camera position
+  const firstCoordinate = useMemo((): Position => {
+    if (geojson.geometry.type === "LineString") {
+      return geojson.geometry.coordinates[0] || [-122.4194, 37.7749];
+    } else if (geojson.geometry.type === "MultiLineString") {
+      return geojson.geometry.coordinates[0]?.[0] || [-122.4194, 37.7749];
+    }
+    return [-122.4194, 37.7749];
+  }, [geojson]);
+
   useEffect(() => {
-    if (cameraRef.current && geojson.geometry.coordinates.length > 0) {
-      const coordinates = geojson.geometry.coordinates;
-
-      // Calculate bounds
-      let minLng = coordinates[0][0];
-      let maxLng = coordinates[0][0];
-      let minLat = coordinates[0][1];
-      let maxLat = coordinates[0][1];
-
-      coordinates.forEach(([lng, lat]) => {
-        minLng = Math.min(minLng, lng);
-        maxLng = Math.max(maxLng, lng);
-        minLat = Math.min(minLat, lat);
-        maxLat = Math.max(maxLat, lat);
-      });
-
+    if (cameraRef.current && bounds) {
       cameraRef.current.fitBounds(
-        [maxLng, maxLat],
-        [minLng, minLat],
+        [bounds.maxLng, bounds.maxLat],
+        [bounds.minLng, bounds.minLat],
         50,
         500
       );
     }
-  }, [geojson]);
+  }, [bounds]);
 
   return (
     <View style={[styles.container, style]}>
@@ -53,9 +70,9 @@ export function TripMap({ geojson, style }: TripMapProps) {
         logoEnabled={false}
       >
         <Camera
-          // ref={cameraRef}
+          ref={cameraRef}
           defaultSettings={{
-            centerCoordinate: geojson.geometry.coordinates[0],
+            centerCoordinate: firstCoordinate,
             zoomLevel: 12,
           }}
         />

@@ -1,28 +1,47 @@
-import { useLazyLoadQuery } from "react-relay";
+import { useState, useCallback } from "react";
+import { useLazyLoadQuery, useRelayEnvironment, fetchQuery } from "react-relay";
 import { View, Text, FlatList, StyleSheet } from "react-native";
-// Query defined in ../graphql/queries.ts - run `npm run relay` after changes
 import type { queriesTripsListQuery } from "@/graphql/__generated__/queriesTripsListQuery.graphql";
 import TripsListQueryNode from "@/graphql/__generated__/queriesTripsListQuery.graphql";
 import { TripMap } from "./TripMap";
-import type { Feature, LineString } from "geojson";
+import { GpxUpload } from "./GpxUpload";
+import type { Feature, LineString, MultiLineString } from "geojson";
 
-// Sample GeoJSON line for demonstration
-const sampleGeoJSON: Feature<LineString> = {
-  type: "Feature",
-  geometry: {
-    type: "LineString",
-    coordinates: [
-      [-122.4194, 37.7749], // San Francisco
-      [-122.4089, 37.7855],
-      [-122.3984, 37.7923],
-      [-122.3879, 37.7891],
-    ],
-  },
-  properties: {},
-};
+// Parse GeoJSON geometry from ST_AsGeoJSON output
+function parseGeometry(geojsonString: string | null | undefined): Feature<LineString | MultiLineString> | null {
+  if (!geojsonString) return null;
+
+  try {
+    const parsed = JSON.parse(geojsonString);
+    // ST_AsGeoJSON returns just the geometry, wrap it in a Feature
+    if (parsed.type === "LineString" || parsed.type === "MultiLineString") {
+      return { type: "Feature", geometry: parsed, properties: {} };
+    }
+    if (parsed.type === "Feature") {
+      return parsed;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 export function TripsList() {
-  const data = useLazyLoadQuery<queriesTripsListQuery>(TripsListQueryNode, { first: 10 });
+  const environment = useRelayEnvironment();
+  const [refreshedAt, setRefreshedAt] = useState(Date.now());
+
+  const handleUploadComplete = useCallback(() => {
+    // Fetch fresh data from network and update store
+    fetchQuery(environment, TripsListQueryNode, { first: 10 }, { fetchPolicy: "network-only" })
+      .toPromise()
+      .then(() => setRefreshedAt(Date.now()));
+  }, [environment]);
+
+  const data = useLazyLoadQuery<queriesTripsListQuery>(
+    TripsListQueryNode,
+    { first: 10 },
+    { fetchPolicy: "store-and-network" }
+  );
 
   const trips = data.tripsCollection?.edges ?? [];
 
@@ -31,20 +50,30 @@ export function TripsList() {
       <FlatList
         data={trips}
         keyExtractor={(item) => item.node.id}
-        ListHeaderComponent={
-          <View style={styles.mapContainer}>
-            <Text style={styles.mapTitle}>Sample Trip Map</Text>
-            <TripMap geojson={sampleGeoJSON} />
-          </View>
-        }
-        renderItem={({ item }) => (
-          <View style={styles.tripCard}>
-            <Text style={styles.tripName}>{item.node.name}</Text>
-            {item.node.description && (
-              <Text style={styles.tripDescription}>{item.node.description}</Text>
-            )}
-          </View>
-        )}
+        renderItem={({ item }) => {
+          const geometry = parseGeometry(item.node.trips_summary_geometry_geojson);
+          const bounds = item.node.bounds_min_lat != null ? {
+            minLat: item.node.bounds_min_lat,
+            minLng: item.node.bounds_min_lng!,
+            maxLat: item.node.bounds_max_lat!,
+            maxLng: item.node.bounds_max_lng!,
+          } : undefined;
+
+          return (
+            <View style={styles.tripCard}>
+              <Text style={styles.tripName}>{item.node.name}</Text>
+              {item.node.description && (
+                <Text style={styles.tripDescription}>{item.node.description}</Text>
+              )}
+              {geometry && (
+                <View style={styles.tripMapContainer}>
+                  <TripMap geojson={geometry} bounds={bounds} />
+                </View>
+              )}
+              <GpxUpload tripId={item.node.id} onUploadComplete={handleUploadComplete} />
+            </View>
+          );
+        }}
         ListEmptyComponent={
           <Text style={styles.emptyText}>No trips yet</Text>
         }
@@ -78,6 +107,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#666",
     marginTop: 4,
+  },
+  tripMapContainer: {
+    marginTop: 12,
   },
   emptyText: {
     textAlign: "center",

@@ -14,6 +14,8 @@
     "@coinbase/cds-web": "^8.34.1",
     "@pomb/common": "^0.0.0",
     "@supabase/supabase-js": "^2.89.0",
+    "@tmcw/togeojson": "^5.8.1",
+    "@turf/turf": "^7.3.1",
     "framer-motion": "^10.18.0",
     "maplibre-gl": "^5.15.0",
     "react": "19.1.0",

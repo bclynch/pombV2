@@ -13,16 +13,13 @@ Run web app + watched relay compiler:
 
 ## TODO
 
-- Create cloudflare r2 bucket
-- Upload gpx functionality
-- Update db geojson stuff
 - Upload pics for a trip
   - attaching to gpx somehow 
 - Deploy to cloudflare pages
   - Wire up deploy on commit
 - Deploy to google play store   
 - Add domain for maptiler API key once it's deployed
-- Add domain for R2 bucket once deployed
+- Add domain for R2 bucket CORS once deployed
 
 ## Done
 
@@ -33,7 +30,9 @@ Run web app + watched relay compiler:
 - Add maps to both apps
 - Add CDS to both apps
 - Add signup/sign in
-
+- Create cloudflare r2 bucket
+- Upload gpx functionality
+- Update db geojson stuff
 
 
 

@@ -13,6 +13,11 @@ export const TripsListQuery = graphql`
           description
           is_published
           created_at
+          trips_summary_geometry_geojson
+          bounds_min_lat
+          bounds_min_lng
+          bounds_max_lat
+          bounds_max_lng
         }
       }
     }

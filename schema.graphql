@@ -1014,6 +1014,7 @@ type trips {  id: UUID!
     """Sort order to apply to the collection"""
     orderBy: [photosOrderBy!]
   ): photosConnection
+  trips_summary_geometry_geojson: String
 }
 
 type tripsConnection {
