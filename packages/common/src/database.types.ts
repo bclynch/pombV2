@@ -88,18 +88,21 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          bio: string | null
           id: string
           updated_at: string | null
           username: string | null
         }
         Insert: {
           avatar_url?: string | null
+          bio?: string | null
           id: string
           updated_at?: string | null
           username?: string | null
         }
         Update: {
           avatar_url?: string | null
+          bio?: string | null
           id?: string
           updated_at?: string | null
           username?: string | null
@@ -215,7 +218,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_trip_geometry_geojson: { Args: { trip_id: string }; Returns: string }
+      trips_summary_geometry_geojson: {
+        Args: { trip: Database["public"]["Tables"]["trips"]["Row"] }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

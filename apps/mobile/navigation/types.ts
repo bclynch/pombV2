@@ -5,6 +5,7 @@ export type AuthStackParamList = {
 
 export type MainStackParamList = {
   Home: undefined;
+  Profile: { username: string };
 };
 
 export type RootStackParamList = {

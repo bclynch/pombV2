@@ -23,3 +23,15 @@ export const TripsListQuery = graphql`
     }
   }
 `;
+
+export const HomeScreenProfileQuery = graphql`
+  query queriesHomeScreenProfileQuery($userId: UUID!) {
+    profilesCollection(filter: { id: { eq: $userId } }, first: 1) {
+      edges {
+        node {
+          username
+        }
+      }
+    }
+  }
+`;

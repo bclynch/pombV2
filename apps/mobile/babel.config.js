@@ -3,6 +3,7 @@ module.exports = function (api) {
   return {
     presets: ["babel-preset-expo"],
     plugins: [
+      ["relay", { eagerEsModules: true }],
       [
         "module-resolver",
         {

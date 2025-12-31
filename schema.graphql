@@ -466,6 +466,7 @@ type profiles {  id: UUID!
   username: String
   avatar_url: String
   updated_at: Datetime
+  bio: String
   tripsCollection(
     """Query the first `n` records in the collection"""
     first: Int
@@ -563,6 +564,7 @@ input profilesFilter {
   username: StringFilter
   avatar_url: StringFilter
   updated_at: DatetimeFilter
+  bio: StringFilter
   """
   Returns true only if all its inner filters are true, otherwise returns false
   """
@@ -582,6 +584,7 @@ input profilesInsertInput {
   username: String
   avatar_url: String
   updated_at: Datetime
+  bio: String
 }
 
 type profilesInsertResponse {
@@ -597,6 +600,7 @@ input profilesOrderBy {
   username: OrderByDirection
   avatar_url: OrderByDirection
   updated_at: OrderByDirection
+  bio: OrderByDirection
 }
 
 input profilesUpdateInput {
@@ -604,6 +608,7 @@ input profilesUpdateInput {
   username: String
   avatar_url: String
   updated_at: Datetime
+  bio: String
 }
 
 type profilesUpdateResponse {
@@ -616,6 +621,7 @@ type profilesUpdateResponse {
 
 """The root type for querying data"""
 type Query {
+  get_trip_geometry_geojson(trip_id: UUID!): String
   """A pagable collection of type `photos`"""
   photosCollection(
     """Query the first `n` records in the collection"""

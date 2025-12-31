@@ -33,6 +33,8 @@ Run web app + watched relay compiler:
 - Create cloudflare r2 bucket
 - Upload gpx functionality
 - Update db geojson stuff
+- Profile route
+- Create trip UX
 
 
 

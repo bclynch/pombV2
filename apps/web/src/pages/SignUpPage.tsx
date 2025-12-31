@@ -5,8 +5,10 @@ import { TextInput } from "@coinbase/cds-web/controls";
 import { TextTitle2, TextBody } from "@coinbase/cds-web/typography";
 import { VStack, HStack } from "@coinbase/cds-web/layout";
 import { useAuth } from "../lib/AuthContext";
+import { supabase } from "../lib/supabase";
 
 export function SignUpPage() {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -16,12 +18,40 @@ export function SignUpPage() {
   const { signUp } = useAuth();
   const navigate = useNavigate();
 
+  const validateUsername = (value: string) => {
+    if (value.length < 3) {
+      return "Username must be at least 3 characters";
+    }
+    if (value.length > 20) {
+      return "Username must be 20 characters or less";
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+      return "Username can only contain letters, numbers, and underscores";
+    }
+    return null;
+  };
+
+  const checkUsernameAvailable = async (value: string): Promise<boolean> => {
+    const { data } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("username", value.toLowerCase())
+      .single();
+    return !data;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    if (!email || !password || !confirmPassword) {
+    if (!username || !email || !password || !confirmPassword) {
       setError("Please fill in all fields");
+      return;
+    }
+
+    const usernameValidation = validateUsername(username);
+    if (usernameValidation) {
+      setError(usernameValidation);
       return;
     }
 
@@ -36,14 +66,36 @@ export function SignUpPage() {
     }
 
     setLoading(true);
-    const { error } = await signUp(email, password);
-    setLoading(false);
 
-    if (error) {
-      setError(error.message);
-    } else {
-      setSuccess(true);
+    // Check if username is available
+    const isAvailable = await checkUsernameAvailable(username);
+    if (!isAvailable) {
+      setLoading(false);
+      setError("Username is already taken");
+      return;
     }
+
+    // Sign up the user
+    const { error: signUpError } = await signUp(email, password);
+
+    if (signUpError) {
+      setLoading(false);
+      setError(signUpError.message);
+      return;
+    }
+
+    // Get the new user's session and update their profile with the username
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await supabase
+        .from("profiles")
+        .update({ username: username.toLowerCase() })
+        .eq("id", user.id);
+    }
+
+    setLoading(false);
+    // Navigate to home - user is already logged in
+    navigate("/");
   };
 
   if (success) {
@@ -76,6 +128,15 @@ export function SignUpPage() {
           )}
 
           <VStack gap={4}>
+            <TextInput
+              label="Username"
+              placeholder="Choose a username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              autoComplete="username"
+              helperText="3-20 characters, letters, numbers, and underscores only"
+            />
+
             <TextInput
               label="Email"
               placeholder="you@example.com"

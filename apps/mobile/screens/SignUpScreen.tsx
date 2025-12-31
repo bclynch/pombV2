@@ -8,6 +8,7 @@ import { TextTitle2 } from "@coinbase/cds-mobile/typography/TextTitle2";
 import { TextBody } from "@coinbase/cds-mobile/typography/TextBody";
 import { VStack } from "@coinbase/cds-mobile/layout/VStack";
 import { useAuth } from "@/lib/AuthContext";
+import { supabase } from "@/lib/supabase";
 import { AuthStackParamList, RootStackParamList } from "@/navigation/types";
 
 type SignUpScreenProps = {
@@ -15,16 +16,46 @@ type SignUpScreenProps = {
 };
 
 export function SignUpScreen({ navigation }: SignUpScreenProps) {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [usernameError, setUsernameError] = useState<string | null>(null);
   const { signUp } = useAuth();
   const rootNavigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
+  const validateUsername = (value: string) => {
+    if (value.length < 3) {
+      return "Username must be at least 3 characters";
+    }
+    if (value.length > 20) {
+      return "Username must be 20 characters or less";
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+      return "Username can only contain letters, numbers, and underscores";
+    }
+    return null;
+  };
+
+  const checkUsernameAvailable = async (value: string): Promise<boolean> => {
+    const { data } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("username", value.toLowerCase())
+      .single();
+    return !data;
+  };
+
   const handleSignUp = async () => {
-    if (!email || !password || !confirmPassword) {
+    if (!username || !email || !password || !confirmPassword) {
       Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+
+    const usernameValidation = validateUsername(username);
+    if (usernameValidation) {
+      Alert.alert("Error", usernameValidation);
       return;
     }
 
@@ -39,18 +70,36 @@ export function SignUpScreen({ navigation }: SignUpScreenProps) {
     }
 
     setLoading(true);
+
+    // Check if username is available
+    const isAvailable = await checkUsernameAvailable(username);
+    if (!isAvailable) {
+      setLoading(false);
+      Alert.alert("Error", "Username is already taken");
+      return;
+    }
+
+    // Sign up the user
     const { error } = await signUp(email, password);
-    setLoading(false);
 
     if (error) {
+      setLoading(false);
       Alert.alert("Error", error.message);
-    } else {
-      Alert.alert(
-        "Success",
-        "Check your email for a confirmation link to complete your registration.",
-        [{ text: "OK", onPress: () => rootNavigation.goBack() }]
-      );
+      return;
     }
+
+    // Get the new user's session and update their profile with the username
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await supabase
+        .from("profiles")
+        .update({ username: username.toLowerCase() })
+        .eq("id", user.id);
+    }
+
+    setLoading(false);
+    // Navigate back to home - user is already logged in
+    rootNavigation.goBack();
   };
 
   const handleClose = () => {
@@ -74,6 +123,16 @@ export function SignUpScreen({ navigation }: SignUpScreenProps) {
           </View>
 
           <VStack gap={4}>
+            <TextInput
+              label="Username"
+              placeholder="Choose a username"
+              value={username}
+              onChangeText={setUsername}
+              autoCapitalize="none"
+              autoCorrect={false}
+              helperText="3-20 characters, letters, numbers, and underscores only"
+            />
+
             <TextInput
               label="Email"
               placeholder="you@example.com"
