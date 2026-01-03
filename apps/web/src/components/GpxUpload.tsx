@@ -1,4 +1,7 @@
 import { useRef } from "react";
+import { Box, VStack } from "@coinbase/cds-web/layout";
+import { Button } from "@coinbase/cds-web/buttons";
+import { TextBody, TextLabel2 } from "@coinbase/cds-web/typography";
 import { useTripUpload } from "../hooks/useTripUpload";
 
 interface GpxUploadProps {
@@ -37,7 +40,7 @@ export function GpxUpload({ tripId, onUploadComplete }: GpxUploadProps) {
   const isProcessing = ["parsing", "uploading", "saving"].includes(progress.phase);
 
   return (
-    <div style={{ marginTop: "12px" }}>
+    <VStack gap={2}>
       <input
         ref={fileInputRef}
         type="file"
@@ -48,61 +51,45 @@ export function GpxUpload({ tripId, onUploadComplete }: GpxUploadProps) {
         style={{ display: "none" }}
         id={`gpx-upload-${tripId}`}
       />
-      <label
+      <Button
+        as="label"
         htmlFor={`gpx-upload-${tripId}`}
-        style={{
-          display: "inline-block",
-          padding: "8px 16px",
-          backgroundColor: isProcessing ? "#ccc" : "#0052ff",
-          color: "white",
-          borderRadius: "6px",
-          cursor: isProcessing ? "not-allowed" : "pointer",
-          fontSize: "14px",
-        }}
+        variant={isProcessing ? "secondary" : "primary"}
+        disabled={isProcessing}
+        style={{ cursor: isProcessing ? "not-allowed" : "pointer" }}
       >
         {isProcessing ? progress.message : "Add GPX Files"}
-      </label>
+      </Button>
 
       {isProcessing && progress.total > 0 && (
-        <div style={{ marginTop: "8px" }}>
-          <div
-            style={{
-              width: "100%",
-              height: "4px",
-              backgroundColor: "#e0e0e0",
-              borderRadius: "2px",
-              overflow: "hidden",
-            }}
+        <VStack gap={1} alignItems="center">
+          <Box
+            width="100%"
+            height={4}
+            background="bgTertiary"
+            borderRadius={100}
+            overflow="hidden"
           >
-            <div
+            <Box
+              height="100%"
+              background="bgPrimary"
               style={{
                 width: `${(progress.current / progress.total) * 100}%`,
-                height: "100%",
-                backgroundColor: "#0052ff",
                 transition: "width 0.2s",
               }}
             />
-          </div>
-          <span style={{ fontSize: "12px", color: "#666" }}>
+          </Box>
+          <TextLabel2 color="fgMuted">
             {progress.current} of {progress.total}
-          </span>
-        </div>
+          </TextLabel2>
+        </VStack>
       )}
 
       {error && (
-        <div
-          style={{
-            marginTop: "8px",
-            padding: "8px",
-            backgroundColor: "#fee",
-            borderRadius: "4px",
-            fontSize: "14px",
-            color: "#c00",
-          }}
-        >
-          {error}
-        </div>
+        <Box padding={2} background="bgNegative" borderRadius={200}>
+          <TextBody color="fgNegative">{error}</TextBody>
+        </Box>
       )}
-    </div>
+    </VStack>
   );
 }

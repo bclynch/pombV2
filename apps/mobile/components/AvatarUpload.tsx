@@ -1,15 +1,10 @@
 import { useState } from "react";
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Image,
-  ActivityIndicator,
-  Alert,
-} from "react-native";
+import { Image, Alert, ActivityIndicator } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
+import { Box } from "@coinbase/cds-mobile/layout/Box";
 import { TextTitle1 } from "@coinbase/cds-mobile/typography/TextTitle1";
+import { Pressable } from "@coinbase/cds-mobile/system/Pressable";
 import { supabase } from "@/lib/supabase";
 
 interface AvatarUploadProps {
@@ -112,9 +107,10 @@ export function AvatarUpload({
     } catch (error) {
       setUploading(false);
       setLocalImageUri(null);
+      console.error("Avatar upload error:", error);
       Alert.alert(
         "Upload Failed",
-        error instanceof Error ? error.message : "Failed to upload avatar"
+        "Something went wrong, please try again"
       );
     }
   };
@@ -123,69 +119,55 @@ export function AvatarUpload({
   const displayUri = localImageUri || currentAvatarUrl;
 
   return (
-    <TouchableOpacity
-      style={styles.container}
-      onPress={pickAndUploadImage}
-      disabled={uploading}
-      activeOpacity={0.7}
-    >
-      {displayUri ? (
-        <Image source={{ uri: displayUri }} style={styles.avatar} />
-      ) : (
-        <View style={[styles.avatar, styles.placeholder]}>
-          <TextTitle1>{username?.charAt(0).toUpperCase() ?? "?"}</TextTitle1>
-        </View>
-      )}
-      {uploading && (
-        <View style={styles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#fff" />
-        </View>
-      )}
-      <View style={styles.editBadge}>
-        <TextTitle1 style={styles.editIcon}>📷</TextTitle1>
-      </View>
-    </TouchableOpacity>
+    <Pressable onPress={pickAndUploadImage} disabled={uploading}>
+      <Box width={100} height={100}>
+        {displayUri ? (
+          <Image
+            source={{ uri: displayUri }}
+            style={{ width: 100, height: 100, borderRadius: 50 }}
+          />
+        ) : (
+          <Box
+            width={100}
+            height={100}
+            borderRadius={1000}
+            background="bgTertiary"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <TextTitle1>{username?.charAt(0).toUpperCase() ?? "?"}</TextTitle1>
+          </Box>
+        )}
+        {uploading && (
+          <Box
+            position="absolute"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
+            borderRadius={1000}
+            justifyContent="center"
+            alignItems="center"
+            style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+          >
+            <ActivityIndicator size="large" color="#fff" />
+          </Box>
+        )}
+        <Box
+          position="absolute"
+          bottom={0}
+          right={0}
+          width={32}
+          height={32}
+          borderRadius={1000}
+          background="bg"
+          justifyContent="center"
+          alignItems="center"
+          elevation={1}
+        >
+          <TextTitle1 style={{ fontSize: 16 }}>📷</TextTitle1>
+        </Box>
+      </Box>
+    </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    position: "relative",
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-  },
-  placeholder: {
-    backgroundColor: "#e0e0e0",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loadingOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    borderRadius: 50,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  editBadge: {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  editIcon: {
-    fontSize: 16,
-  },
-});

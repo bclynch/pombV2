@@ -13,6 +13,7 @@ Run web app + watched relay compiler:
 
 ## TODO
 
+- Trip screen
 - Upload pics for a trip
   - attaching to gpx somehow 
 - Deploy to cloudflare pages
@@ -35,6 +36,7 @@ Run web app + watched relay compiler:
 - Update db geojson stuff
 - Profile route
 - Create trip UX
+- Refactor for better CDS usage
 
 
 

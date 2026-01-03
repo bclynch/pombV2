@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1b5895f0fa817efd1b875c1387f36c9e>>
+ * @generated SignedSource<<e32ed4f707bd575b6356b263f83811a5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -31,6 +31,7 @@ export type ProfileQueryWebQuery$data = {
               readonly id: any;
               readonly is_published: boolean | null | undefined;
               readonly name: string;
+              readonly slug: string;
               readonly start_date: any | null | undefined;
               readonly trips_summary_geometry_geojson: string | null | undefined;
             };
@@ -138,6 +139,13 @@ v7 = [
             "args": null,
             "kind": "ScalarField",
             "name": "name",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "slug",
             "storageKey": null
           },
           {
@@ -384,7 +392,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "6b807e45175c5503099bbda42d5219f9",
+    "cacheID": "1dbe0f487218f6279586d2b2c57a73a5",
     "id": null,
     "metadata": {
       "connection": [
@@ -398,11 +406,11 @@ return {
     },
     "name": "ProfileQueryWebQuery",
     "operationKind": "query",
-    "text": "query ProfileQueryWebQuery(\n  $username: String!\n) {\n  profilesCollection(filter: {username: {eq: $username}}, first: 1) {\n    edges {\n      node {\n        id\n        username\n        avatar_url\n        bio\n        tripsCollection(first: 50, orderBy: [{created_at: DescNullsLast}]) {\n          edges {\n            node {\n              id\n              name\n              description\n              is_published\n              created_at\n              start_date\n              trips_summary_geometry_geojson\n              bounds_min_lat\n              bounds_min_lng\n              bounds_max_lat\n              bounds_max_lng\n              __typename\n            }\n            cursor\n          }\n          pageInfo {\n            endCursor\n            hasNextPage\n          }\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query ProfileQueryWebQuery(\n  $username: String!\n) {\n  profilesCollection(filter: {username: {eq: $username}}, first: 1) {\n    edges {\n      node {\n        id\n        username\n        avatar_url\n        bio\n        tripsCollection(first: 50, orderBy: [{created_at: DescNullsLast}]) {\n          edges {\n            node {\n              id\n              name\n              slug\n              description\n              is_published\n              created_at\n              start_date\n              trips_summary_geometry_geojson\n              bounds_min_lat\n              bounds_min_lng\n              bounds_max_lat\n              bounds_max_lng\n              __typename\n            }\n            cursor\n          }\n          pageInfo {\n            endCursor\n            hasNextPage\n          }\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "c31eeb8e1284a797ae271c60549a4739";
+(node as any).hash = "cdfb3d1166234f097c6688ef9a2f822c";
 
 export default node;

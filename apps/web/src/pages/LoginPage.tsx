@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@coinbase/cds-web/buttons";
 import { TextInput } from "@coinbase/cds-web/controls";
-import { TextTitle2, TextBody } from "@coinbase/cds-web/typography";
-import { VStack, HStack } from "@coinbase/cds-web/layout";
+import { TextTitle2, TextBody, Link } from "@coinbase/cds-web/typography";
+import { VStack, HStack, Box } from "@coinbase/cds-web/layout";
 import { useAuth } from "../lib/AuthContext";
 
 export function LoginPage() {
@@ -35,15 +35,21 @@ export function LoginPage() {
   };
 
   return (
-    <div style={styles.container}>
-      <form onSubmit={handleSubmit} style={styles.form}>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="100vh"
+      padding={6}
+    >
+      <Box as="form" onSubmit={handleSubmit} width="100%" maxWidth={400}>
         <VStack gap={6}>
           <TextTitle2>Welcome Back</TextTitle2>
 
           {error && (
-            <div style={styles.error}>
-              <TextBody>{error}</TextBody>
-            </div>
+            <Box padding={3} background="bgNegative" borderRadius={200}>
+              <TextBody color="fgNegative">{error}</TextBody>
+            </Box>
           )}
 
           <VStack gap={4}>
@@ -74,38 +80,12 @@ export function LoginPage() {
             <HStack justifyContent="center">
               <TextBody>
                 Don't have an account?{" "}
-                <Link to="/signup" style={styles.link}>
-                  Sign Up
-                </Link>
+                <Link href="/signup">Sign Up</Link>
               </TextBody>
             </HStack>
           </VStack>
         </VStack>
-      </form>
-    </div>
+      </Box>
+    </Box>
   );
 }
-
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "100vh",
-    padding: "24px",
-  },
-  form: {
-    width: "100%",
-    maxWidth: "400px",
-  },
-  error: {
-    padding: "12px",
-    backgroundColor: "#fee",
-    borderRadius: "8px",
-    color: "#c00",
-  },
-  link: {
-    color: "#0052ff",
-    textDecoration: "none",
-  },
-} as const;

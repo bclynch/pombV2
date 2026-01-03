@@ -18,6 +18,7 @@ export const ProfileQuery = graphql`
               node {
                 id
                 name
+                slug
                 description
                 is_published
                 created_at

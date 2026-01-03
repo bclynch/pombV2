@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8f2f0b1f97e1b1a30df111668340be2e>>
+ * @generated SignedSource<<59489009517f3a78df943ea62cdfba66>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -20,6 +20,7 @@ export type tripsInsertInput = {
   id?: any | null | undefined;
   is_published?: boolean | null | undefined;
   name?: string | null | undefined;
+  slug?: string | null | undefined;
   start_date?: any | null | undefined;
   summary_geometry?: any | null | undefined;
   user_id?: any | null | undefined;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e848876109f18505ef98c10b633871d0>>
+ * @generated SignedSource<<a15ea9232a7e893a08ac390f46f6b257>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -25,6 +25,10 @@ export type queriesTripsListQuery$data = {
         readonly id: any;
         readonly is_published: boolean | null | undefined;
         readonly name: string;
+        readonly profiles: {
+          readonly username: string | null | undefined;
+        } | null | undefined;
+        readonly slug: string;
         readonly trips_summary_geometry_geojson: string | null | undefined;
       };
     }>;
@@ -92,6 +96,13 @@ v1 = [
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
+                "name": "slug",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
                 "name": "description",
                 "storageKey": null
               },
@@ -143,6 +154,24 @@ v1 = [
                 "kind": "ScalarField",
                 "name": "bounds_max_lng",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "profiles",
+                "kind": "LinkedField",
+                "name": "profiles",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "username",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
               }
             ],
             "storageKey": null
@@ -172,16 +201,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "379e8d60eae73ac3966c01fdc973ca20",
+    "cacheID": "cc407f5279d6e6884f0042c468fe82d6",
     "id": null,
     "metadata": {},
     "name": "queriesTripsListQuery",
     "operationKind": "query",
-    "text": "query queriesTripsListQuery(\n  $first: Int!\n) {\n  tripsCollection(first: $first) {\n    edges {\n      node {\n        id\n        name\n        description\n        is_published\n        created_at\n        trips_summary_geometry_geojson\n        bounds_min_lat\n        bounds_min_lng\n        bounds_max_lat\n        bounds_max_lng\n      }\n    }\n  }\n}\n"
+    "text": "query queriesTripsListQuery(\n  $first: Int!\n) {\n  tripsCollection(first: $first) {\n    edges {\n      node {\n        id\n        name\n        slug\n        description\n        is_published\n        created_at\n        trips_summary_geometry_geojson\n        bounds_min_lat\n        bounds_min_lng\n        bounds_max_lat\n        bounds_max_lng\n        profiles {\n          username\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "5c332410f8794ae65f165f98b3f3bf33";
+(node as any).hash = "fea419d5b551cbce20d2c102919667dc";
 
 export default node;

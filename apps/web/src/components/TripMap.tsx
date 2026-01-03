@@ -1,4 +1,6 @@
 import { useEffect, useRef } from "react";
+import { Box } from "@coinbase/cds-web/layout";
+import { TextBody } from "@coinbase/cds-web/typography";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import type { Feature, LineString, MultiLineString, Position } from "geojson";
@@ -19,9 +21,13 @@ const MAPTILER_API_KEY = import.meta.env.VITE_MAPTILER_API_KEY;
 export function TripMap({ geojson, bounds: propBounds, style }: TripMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
+  const hasValidGeometry = Boolean(geojson?.geometry);
 
   // Get first coordinate for initial center
   const getFirstCoordinate = (): Position => {
+    if (!geojson?.geometry) {
+      return [-122.4194, 37.7749];
+    }
     if (geojson.geometry.type === "LineString") {
       return geojson.geometry.coordinates[0] || [-122.4194, 37.7749];
     } else if (geojson.geometry.type === "MultiLineString") {
@@ -31,7 +37,7 @@ export function TripMap({ geojson, bounds: propBounds, style }: TripMapProps) {
   };
 
   useEffect(() => {
-    if (!mapContainer.current || map.current) return;
+    if (!hasValidGeometry || !mapContainer.current || map.current) return;
 
     const firstCoord = getFirstCoordinate();
 
@@ -42,8 +48,17 @@ export function TripMap({ geojson, bounds: propBounds, style }: TripMapProps) {
       zoom: 12,
     });
 
+    // Handle missing images gracefully
+    map.current.on("styleimagemissing", (e) => {
+      const id = e.id;
+      // Create a transparent 1x1 placeholder image
+      if (!map.current?.hasImage(id)) {
+        map.current?.addImage(id, { width: 1, height: 1, data: new Uint8Array(4) });
+      }
+    });
+
     map.current.on("load", () => {
-      if (!map.current) return;
+      if (!map.current || !geojson?.geometry) return;
 
       map.current.addSource("route", {
         type: "geojson",
@@ -96,12 +111,37 @@ export function TripMap({ geojson, bounds: propBounds, style }: TripMapProps) {
       map.current?.remove();
       map.current = null;
     };
-  }, [geojson, propBounds]);
+  }, [geojson, propBounds, hasValidGeometry]);
+
+  // Show placeholder if geojson is invalid
+  if (!hasValidGeometry) {
+    return (
+      <Box
+        width="100%"
+        height={300}
+        style={style}
+        background="bgTertiary"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        borderRadius={200}
+      >
+        <TextBody color="fgMuted">No route data</TextBody>
+      </Box>
+    );
+  }
+
+  const height = typeof style?.height === 'number' ? style.height : 300;
 
   return (
     <div
       ref={mapContainer}
-      style={{ width: "100%", height: "300px", ...style }}
+      style={{
+        width: "100%",
+        minWidth: 300,
+        height: `${height}px`,
+        display: "block",
+      }}
     />
   );
 }

@@ -1,6 +1,7 @@
-import { ReactNode, Suspense } from "react";
+import { Suspense, type ReactNode } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator } from "react-native";
+import { Box } from "@coinbase/cds-mobile/layout/Box";
 import { relayEnvironment } from "@/lib/supabase";
 
 type Props = {
@@ -12,9 +13,9 @@ export function RelayProvider({ children }: Props) {
     <RelayEnvironmentProvider environment={relayEnvironment}>
       <Suspense
         fallback={
-          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <Box flexGrow={1} justifyContent="center" alignItems="center">
             <ActivityIndicator size="large" />
-          </View>
+          </Box>
         }
       >
         {children}

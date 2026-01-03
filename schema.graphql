@@ -621,6 +621,7 @@ type profilesUpdateResponse {
 
 """The root type for querying data"""
 type Query {
+  generate_trip_slug(trip_name: String!): String
   get_trip_geometry_geojson(trip_id: UUID!): String
   """A pagable collection of type `photos`"""
   photosCollection(
@@ -971,6 +972,7 @@ type trips {  id: UUID!
   bounds_max_lng: Float
   is_published: Boolean
   created_at: Datetime
+  slug: String!
   profiles: profiles
   trip_uploadsCollection(
     """Query the first `n` records in the collection"""
@@ -1055,6 +1057,7 @@ input tripsFilter {
   bounds_max_lng: FloatFilter
   is_published: BooleanFilter
   created_at: DatetimeFilter
+  slug: StringFilter
   """
   Returns true only if all its inner filters are true, otherwise returns false
   """
@@ -1083,6 +1086,7 @@ input tripsInsertInput {
   bounds_max_lng: Float
   is_published: Boolean
   created_at: Datetime
+  slug: String
 }
 
 type tripsInsertResponse {
@@ -1107,6 +1111,7 @@ input tripsOrderBy {
   bounds_max_lng: OrderByDirection
   is_published: OrderByDirection
   created_at: OrderByDirection
+  slug: OrderByDirection
 }
 
 input tripsUpdateInput {
@@ -1123,6 +1128,7 @@ input tripsUpdateInput {
   bounds_max_lng: Float
   is_published: Boolean
   created_at: Datetime
+  slug: String
 }
 
 type tripsUpdateResponse {

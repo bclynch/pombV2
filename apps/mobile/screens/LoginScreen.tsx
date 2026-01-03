@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { StyleSheet, View, Alert, KeyboardAvoidingView, Platform, Pressable } from "react-native";
+import { KeyboardAvoidingView, Platform, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Button } from "@coinbase/cds-mobile/buttons/Button";
 import { TextInput } from "@coinbase/cds-mobile/controls/TextInput";
 import { TextTitle2 } from "@coinbase/cds-mobile/typography/TextTitle2";
 import { TextBody } from "@coinbase/cds-mobile/typography/TextBody";
-import { VStack } from "@coinbase/cds-mobile/layout/VStack";
+import { Box, VStack } from "@coinbase/cds-mobile/layout";
+import { Pressable } from "@coinbase/cds-mobile/system/Pressable";
 import { useAuth } from "@/lib/AuthContext";
 import { AuthStackParamList, RootStackParamList } from "@/navigation/types";
 
@@ -45,70 +46,52 @@ export function LoginScreen({ navigation }: LoginScreenProps) {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
+      style={{ flex: 1 }}
     >
-      <View style={styles.closeButton}>
-        <Pressable onPress={handleClose}>
-          <TextBody>Cancel</TextBody>
-        </Pressable>
-      </View>
-      <View style={styles.content}>
-        <VStack gap={6}>
-          <View style={styles.header}>
-            <TextTitle2>Welcome Back</TextTitle2>
-          </View>
+      <Box flexGrow={1} background="bg">
+        <Box padding={2} alignItems="flex-end">
+          <Pressable onPress={handleClose}>
+            <TextBody>Cancel</TextBody>
+          </Pressable>
+        </Box>
+        <Box flexGrow={1} justifyContent="center" padding={3}>
+          <VStack gap={6}>
+            <Box alignItems="center">
+              <TextTitle2>Welcome Back</TextTitle2>
+            </Box>
 
-          <VStack gap={4}>
-            <TextInput
-              label="Email"
-              placeholder="you@example.com"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
+            <VStack gap={4}>
+              <TextInput
+                label="Email"
+                placeholder="you@example.com"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
 
-            <TextInput
-              label="Password"
-              placeholder="Enter your password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-            />
+              <TextInput
+                label="Password"
+                placeholder="Enter your password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+              />
+            </VStack>
+
+            <VStack gap={3}>
+              <Button onPress={handleLogin} disabled={loading}>
+                {loading ? "Signing in..." : "Sign In"}
+              </Button>
+
+              <Button variant="secondary" onPress={() => navigation.navigate("SignUp")}>
+                Don't have an account? Sign Up
+              </Button>
+            </VStack>
           </VStack>
-
-          <VStack gap={3}>
-            <Button onPress={handleLogin} disabled={loading}>
-              {loading ? "Signing in..." : "Sign In"}
-            </Button>
-
-            <Button variant="secondary" onPress={() => navigation.navigate("SignUp")}>
-              Don't have an account? Sign Up
-            </Button>
-          </VStack>
-        </VStack>
-      </View>
+        </Box>
+      </Box>
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  closeButton: {
-    padding: 16,
-    alignItems: "flex-end",
-  },
-  content: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 24,
-  },
-  header: {
-    alignItems: "center",
-    marginBottom: 8,
-  },
-});

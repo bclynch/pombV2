@@ -1,5 +1,8 @@
-import { useState, useRef, ChangeEvent } from "react";
-import { TextTitle1 } from "@coinbase/cds-web/typography";
+import { useState, useRef, type ChangeEvent } from "react";
+import { Box } from "@coinbase/cds-web/layout";
+import { TextTitle1, TextBody } from "@coinbase/cds-web/typography";
+import { Pressable } from "@coinbase/cds-web/system";
+import { Spinner } from "@coinbase/cds-web/loaders";
 import { supabase } from "../lib/supabase";
 
 interface AvatarUploadProps {
@@ -118,7 +121,8 @@ export function AvatarUpload({
     } catch (error) {
       setUploading(false);
       setLocalImageUrl(null);
-      alert(error instanceof Error ? error.message : "Failed to upload avatar");
+      console.error("Avatar upload error:", error);
+      alert("Something went wrong, please try again");
     }
 
     // Reset file input
@@ -130,92 +134,71 @@ export function AvatarUpload({
   const displayUrl = localImageUrl || currentAvatarUrl;
 
   return (
-    <div
-      style={styles.container}
+    <Pressable
       onClick={() => !uploading && fileInputRef.current?.click()}
+      style={{ position: "relative", cursor: "pointer", width: 100, height: 100 }}
     >
       <input
         ref={fileInputRef}
         type="file"
         accept="image/*"
         onChange={handleFileSelect}
-        style={styles.hiddenInput}
+        style={{ display: "none" }}
       />
       {displayUrl ? (
-        <img src={displayUrl} alt="Avatar" style={styles.avatar} />
+        <Box
+          as="img"
+          src={displayUrl}
+          alt="Avatar"
+          width={100}
+          height={100}
+          borderRadius={1000}
+          style={{ objectFit: "cover" }}
+        />
       ) : (
-        <div style={{ ...styles.avatar, ...styles.placeholder }}>
+        <Box
+          width={100}
+          height={100}
+          borderRadius={1000}
+          background="bgTertiary"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
           <TextTitle1>{username?.charAt(0).toUpperCase() ?? "?"}</TextTitle1>
-        </div>
+        </Box>
       )}
       {uploading && (
-        <div style={styles.loadingOverlay}>
-          <div style={styles.spinner} />
-        </div>
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          borderRadius={1000}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+        >
+          <Spinner size={24} />
+        </Box>
       )}
-      <div style={styles.editBadge}>
-        <span style={styles.editIcon}>📷</span>
-      </div>
-    </div>
+      <Box
+        position="absolute"
+        bottom={0}
+        right={0}
+        width={32}
+        height={32}
+        borderRadius={1000}
+        background="bg"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        elevation={1}
+      >
+        <TextBody>📷</TextBody>
+      </Box>
+    </Pressable>
   );
 }
-
-const styles = {
-  container: {
-    position: "relative" as const,
-    cursor: "pointer",
-    width: 100,
-    height: 100,
-  },
-  hiddenInput: {
-    display: "none",
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    objectFit: "cover" as const,
-  },
-  placeholder: {
-    backgroundColor: "#e0e0e0",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loadingOverlay: {
-    position: "absolute" as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    borderRadius: 50,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  spinner: {
-    width: 24,
-    height: 24,
-    border: "3px solid #fff",
-    borderTopColor: "transparent",
-    borderRadius: "50%",
-    animation: "spin 1s linear infinite",
-  },
-  editBadge: {
-    position: "absolute" as const,
-    bottom: 0,
-    right: 0,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "#fff",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-  },
-  editIcon: {
-    fontSize: 16,
-  },
-} as const;

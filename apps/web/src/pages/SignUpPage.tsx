@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@coinbase/cds-web/buttons";
 import { TextInput } from "@coinbase/cds-web/controls";
-import { TextTitle2, TextBody } from "@coinbase/cds-web/typography";
-import { VStack, HStack } from "@coinbase/cds-web/layout";
+import { TextTitle2, TextBody, Link } from "@coinbase/cds-web/typography";
+import { VStack, HStack, Box } from "@coinbase/cds-web/layout";
 import { useAuth } from "../lib/AuthContext";
 import { supabase } from "../lib/supabase";
 
@@ -14,7 +14,6 @@ export function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
   const { signUp } = useAuth();
   const navigate = useNavigate();
 
@@ -75,8 +74,8 @@ export function SignUpPage() {
       return;
     }
 
-    // Sign up the user
-    const { error: signUpError } = await signUp(email, password);
+    // Sign up the user (AuthContext handles username update)
+    const { error: signUpError } = await signUp(email, password, username.toLowerCase());
 
     if (signUpError) {
       setLoading(false);
@@ -84,47 +83,27 @@ export function SignUpPage() {
       return;
     }
 
-    // Get the new user's session and update their profile with the username
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      await supabase
-        .from("profiles")
-        .update({ username: username.toLowerCase() })
-        .eq("id", user.id);
-    }
-
     setLoading(false);
     // Navigate to home - user is already logged in
     navigate("/");
   };
 
-  if (success) {
-    return (
-      <div style={styles.container}>
-        <div style={styles.form}>
-          <VStack gap={4}>
-            <TextTitle2>Check Your Email</TextTitle2>
-            <TextBody>
-              We've sent a confirmation link to {email}. Please check your email
-              to complete your registration.
-            </TextBody>
-            <Button onClick={() => navigate("/login")}>Go to Login</Button>
-          </VStack>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div style={styles.container}>
-      <form onSubmit={handleSubmit} style={styles.form}>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="100vh"
+      padding={6}
+    >
+      <Box as="form" onSubmit={handleSubmit} width="100%" maxWidth={400}>
         <VStack gap={6}>
           <TextTitle2>Create Account</TextTitle2>
 
           {error && (
-            <div style={styles.error}>
-              <TextBody>{error}</TextBody>
-            </div>
+            <Box padding={3} background="bgNegative" borderRadius={200}>
+              <TextBody color="fgNegative">{error}</TextBody>
+            </Box>
           )}
 
           <VStack gap={4}>
@@ -174,38 +153,12 @@ export function SignUpPage() {
             <HStack justifyContent="center">
               <TextBody>
                 Already have an account?{" "}
-                <Link to="/login" style={styles.link}>
-                  Sign In
-                </Link>
+                <Link href="/login">Sign In</Link>
               </TextBody>
             </HStack>
           </VStack>
         </VStack>
-      </form>
-    </div>
+      </Box>
+    </Box>
   );
 }
-
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "100vh",
-    padding: "24px",
-  },
-  form: {
-    width: "100%",
-    maxWidth: "400px",
-  },
-  error: {
-    padding: "12px",
-    backgroundColor: "#fee",
-    borderRadius: "8px",
-    color: "#c00",
-  },
-  link: {
-    color: "#0052ff",
-    textDecoration: "none",
-  },
-} as const;

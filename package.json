@@ -13,8 +13,9 @@
     "check-types": "turbo run check-types",
     "relay": "relay-compiler",
     "relay:watch": "relay-compiler --watch",
-    "dev:mobile": "concurrently -n relay,expo -c blue,green \"npm run relay:watch\" \"npm run --workspace=mobile ios\"",
-    "dev:web": "concurrently -n relay,vite -c blue,green \"npm run relay:watch\" \"npm run --workspace=web dev\"",
+    "start:backend": "./scripts/start-dev.sh",
+    "dev:mobile": "./scripts/start-dev.sh && concurrently -n relay,expo -c blue,green \"npm run relay:watch\" \"npm run --workspace=mobile ios\"",
+    "dev:web": "./scripts/start-dev.sh && concurrently -n relay,vite -c blue,green \"npm run relay:watch\" \"npm run --workspace=web dev\"",
     "schema:fetch": "get-graphql-schema http://127.0.0.1:54321/graphql/v1 -h \"apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0\" > schema.graphql && node scripts/transform-schema.js"
   },
   "devDependencies": {

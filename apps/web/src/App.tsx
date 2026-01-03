@@ -7,6 +7,7 @@ import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { SignUpPage } from "./pages/SignUpPage";
 import { ProfilePage } from "./pages/ProfilePage";
+import { TripPage } from "./pages/TripPage";
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
-                <Route path="/profile/:username" element={<ProfilePage />} />
+                <Route path="/:username/:tripSlug" element={<TripPage />} />
+                <Route path="/:username" element={<ProfilePage />} />
               </Routes>
             </AppLayout>
           </AuthProvider>

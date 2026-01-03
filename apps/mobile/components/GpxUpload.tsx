@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { View, StyleSheet, Alert } from "react-native";
+import { Alert } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import { Button } from "@coinbase/cds-mobile/buttons/Button";
 import { TextBody } from "@coinbase/cds-mobile/typography/TextBody";
-import { VStack } from "@coinbase/cds-mobile/layout/VStack";
+import { TextLabel2 } from "@coinbase/cds-mobile/typography/TextLabel2";
+import { Box, VStack } from "@coinbase/cds-mobile/layout";
 import { useTripUpload } from "@/hooks/useTripUpload";
 
 interface GpxUploadProps {
@@ -65,7 +66,7 @@ export function GpxUpload({ tripId, onUploadComplete }: GpxUploadProps) {
   const isProcessing = isUploading || ["parsing", "uploading", "saving"].includes(progress.phase);
 
   return (
-    <View style={styles.container}>
+    <Box padding={2}>
       <VStack gap={3}>
         <Button
           onPress={handlePickFiles}
@@ -76,64 +77,38 @@ export function GpxUpload({ tripId, onUploadComplete }: GpxUploadProps) {
         </Button>
 
         {isProcessing && progress.total > 0 && (
-          <View style={styles.progressContainer}>
-            <View style={styles.progressBar}>
-              <View
-                style={[
-                  styles.progressFill,
-                  { width: `${(progress.current / progress.total) * 100}%` },
-                ]}
+          <VStack gap={2} alignItems="center">
+            <Box
+              width="100%"
+              height={4}
+              background="bgTertiary"
+              borderRadius={100}
+              overflow="hidden"
+            >
+              <Box
+                height={4}
+                background="bgPrimary"
+                style={{ width: `${(progress.current / progress.total) * 100}%` }}
               />
-            </View>
-            <TextBody>
+            </Box>
+            <TextLabel2 color="fgMuted">
               {progress.current} of {progress.total}
-            </TextBody>
-          </View>
+            </TextLabel2>
+          </VStack>
         )}
 
         {error && (
-          <View style={styles.errorContainer}>
-            <TextBody>{error}</TextBody>
-          </View>
+          <Box padding={3} background="bgNegative" borderRadius={200}>
+            <TextBody color="fgNegative">{error}</TextBody>
+          </Box>
         )}
 
         {progress.phase === "complete" && (
-          <View style={styles.successContainer}>
-            <TextBody>Upload complete!</TextBody>
-          </View>
+          <Box padding={3} background="bgPositive" borderRadius={200}>
+            <TextBody color="fgPositive">Upload complete!</TextBody>
+          </Box>
         )}
       </VStack>
-    </View>
+    </Box>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
-  progressContainer: {
-    alignItems: "center",
-    gap: 8,
-  },
-  progressBar: {
-    width: "100%",
-    height: 4,
-    backgroundColor: "#e0e0e0",
-    borderRadius: 2,
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    backgroundColor: "#0052ff",
-  },
-  errorContainer: {
-    padding: 12,
-    backgroundColor: "#fee",
-    borderRadius: 8,
-  },
-  successContainer: {
-    padding: 12,
-    backgroundColor: "#efe",
-    borderRadius: 8,
-  },
-});

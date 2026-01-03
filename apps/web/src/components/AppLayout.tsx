@@ -1,4 +1,5 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
+import { Box } from "@coinbase/cds-web/layout";
 import { AppHeader } from "./AppHeader";
 
 interface AppLayoutProps {
@@ -7,20 +8,11 @@ interface AppLayoutProps {
 
 export function AppLayout({ children }: AppLayoutProps) {
   return (
-    <div style={styles.container}>
+    <Box display="flex" flexDirection="column" minHeight="100vh" width="100%">
       <AppHeader />
-      <main style={styles.main}>{children}</main>
-    </div>
+      <Box as="main" flexGrow={1} width="100%">
+        {children}
+      </Box>
+    </Box>
   );
 }
-
-const styles = {
-  container: {
-    minHeight: "100vh",
-    display: "flex",
-    flexDirection: "column" as const,
-  },
-  main: {
-    flex: 1,
-  },
-} as const;

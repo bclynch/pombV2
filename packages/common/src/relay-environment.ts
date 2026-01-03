@@ -3,8 +3,8 @@ import {
   Network,
   RecordSource,
   Store,
-  FetchFunction,
-  GraphQLResponse,
+  type FetchFunction,
+  type GraphQLResponse,
 } from "relay-runtime";
 
 export type RelayConfig = {

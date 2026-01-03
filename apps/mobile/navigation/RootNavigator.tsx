@@ -1,6 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { ActivityIndicator, View, StyleSheet } from "react-native";
+import { ActivityIndicator } from "react-native";
+import { Box } from "@coinbase/cds-mobile/layout/Box";
 import { useAuth } from "@/lib/AuthContext";
 import { AuthNavigator } from "./AuthNavigator";
 import { MainNavigator } from "./MainNavigator";
@@ -13,9 +14,9 @@ export function RootNavigator() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <Box flexGrow={1} justifyContent="center" alignItems="center" background="bg">
         <ActivityIndicator size="large" />
-      </View>
+      </Box>
     );
   }
 
@@ -32,12 +33,3 @@ export function RootNavigator() {
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
-  },
-});

@@ -3,17 +3,15 @@
 
 import { graphql } from "react-relay";
 
-export const ProfileQuery = graphql`
-  query ProfileQueryWebQuery($username: String!) {
+export const TripQuery = graphql`
+  query TripQueryWebQuery($username: String!, $slug: String!) {
     profilesCollection(filter: { username: { eq: $username } }, first: 1) {
       edges {
         node {
           id
           username
           avatar_url
-          bio
-          tripsCollection(first: 50, orderBy: [{ created_at: DescNullsLast }])
-            @connection(key: "Profile_tripsCollection") {
+          tripsCollection(filter: { slug: { eq: $slug } }, first: 1) {
             edges {
               node {
                 id
@@ -23,6 +21,7 @@ export const ProfileQuery = graphql`
                 is_published
                 created_at
                 start_date
+                end_date
                 trips_summary_geometry_geojson
                 bounds_min_lat
                 bounds_min_lng

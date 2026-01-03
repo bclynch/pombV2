@@ -1,15 +1,14 @@
-import { StyleSheet, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Box } from "@coinbase/cds-mobile/layout/Box";
 import { RelayProvider } from "@/components/RelayProvider";
 import { AppHeader } from "@/components/AppHeader";
 import { TripsList } from "@/components/TripsList";
 
 function HomeContent() {
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <Box flexGrow={1} background="bg">
       <AppHeader />
       <TripsList />
-    </SafeAreaView>
+    </Box>
   );
 }
 
@@ -20,10 +19,3 @@ export function HomeScreen() {
     </RelayProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-});
