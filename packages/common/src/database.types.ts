@@ -43,6 +43,7 @@ export type Database = {
           location: unknown
           r2_key_large: string | null
           r2_key_thumb: string | null
+          segment_id: string | null
           trip_id: string
           user_id: string
         }
@@ -54,6 +55,7 @@ export type Database = {
           location?: unknown
           r2_key_large?: string | null
           r2_key_thumb?: string | null
+          segment_id?: string | null
           trip_id: string
           user_id: string
         }
@@ -65,10 +67,18 @@ export type Database = {
           location?: unknown
           r2_key_large?: string | null
           r2_key_thumb?: string | null
+          segment_id?: string | null
           trip_id?: string
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "photos_segment_id_fkey"
+            columns: ["segment_id"]
+            isOneToOne: false
+            referencedRelation: "trip_segments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "photos_trip_id_fkey"
             columns: ["trip_id"]
@@ -109,6 +119,60 @@ export type Database = {
         }
         Relationships: []
       }
+      trip_segments: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          end_date: string | null
+          geometry: unknown
+          id: string
+          name: string | null
+          sort_order: number | null
+          start_date: string | null
+          trip_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          geometry?: unknown
+          id?: string
+          name?: string | null
+          sort_order?: number | null
+          start_date?: string | null
+          trip_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          geometry?: unknown
+          id?: string
+          name?: string | null
+          sort_order?: number | null
+          start_date?: string | null
+          trip_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_segments_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_segments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trip_uploads: {
         Row: {
           created_at: string | null
@@ -117,6 +181,7 @@ export type Database = {
           id: string
           r2_key: string
           raw_geometry: unknown
+          segment_id: string | null
           trip_id: string
           user_id: string
         }
@@ -127,6 +192,7 @@ export type Database = {
           id?: string
           r2_key: string
           raw_geometry?: unknown
+          segment_id?: string | null
           trip_id: string
           user_id: string
         }
@@ -137,10 +203,18 @@ export type Database = {
           id?: string
           r2_key?: string
           raw_geometry?: unknown
+          segment_id?: string | null
           trip_id?: string
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "trip_uploads_segment_id_fkey"
+            columns: ["segment_id"]
+            isOneToOne: false
+            referencedRelation: "trip_segments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "trip_uploads_trip_id_fkey"
             columns: ["trip_id"]
@@ -169,6 +243,7 @@ export type Database = {
           id: string
           is_published: boolean | null
           name: string
+          slug: string
           start_date: string | null
           summary_geometry: unknown
           user_id: string
@@ -184,6 +259,7 @@ export type Database = {
           id?: string
           is_published?: boolean | null
           name: string
+          slug: string
           start_date?: string | null
           summary_geometry?: unknown
           user_id: string
@@ -199,6 +275,7 @@ export type Database = {
           id?: string
           is_published?: boolean | null
           name?: string
+          slug?: string
           start_date?: string | null
           summary_geometry?: unknown
           user_id?: string
@@ -218,6 +295,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_trip_slug: { Args: { trip_name: string }; Returns: string }
+      get_segment_geometry_geojson: {
+        Args: { segment_id: string }
+        Returns: string
+      }
       get_trip_geometry_geojson: { Args: { trip_id: string }; Returns: string }
       trips_summary_geometry_geojson: {
         Args: { trip: Database["public"]["Tables"]["trips"]["Row"] }

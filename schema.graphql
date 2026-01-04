@@ -223,6 +223,17 @@ type Mutation {
     atMost: Int! = 1
   ): profilesDeleteResponse!
 
+  """Deletes zero or more records from the `trip_segments` collection"""
+  deleteFromtrip_segmentsCollection(
+    """Restricts the mutation's impact to records matching the criteria"""
+    filter: trip_segmentsFilter
+
+    """
+    The maximum number of records in the collection permitted to be affected
+    """
+    atMost: Int! = 1
+  ): trip_segmentsDeleteResponse!
+
   """Deletes zero or more records from the `trip_uploads` collection"""
   deleteFromtrip_uploadsCollection(
     """Restricts the mutation's impact to records matching the criteria"""
@@ -250,6 +261,9 @@ type Mutation {
 
   """Adds one or more `profiles` records to the collection"""
   insertIntoprofilesCollection(objects: [profilesInsertInput!]!): profilesInsertResponse
+
+  """Adds one or more `trip_segments` records to the collection"""
+  insertIntotrip_segmentsCollection(objects: [trip_segmentsInsertInput!]!): trip_segmentsInsertResponse
 
   """Adds one or more `trip_uploads` records to the collection"""
   insertIntotrip_uploadsCollection(objects: [trip_uploadsInsertInput!]!): trip_uploadsInsertResponse
@@ -288,6 +302,22 @@ type Mutation {
     """
     atMost: Int! = 1
   ): profilesUpdateResponse!
+
+  """Updates zero or more records in the `trip_segments` collection"""
+  updatetrip_segmentsCollection(
+    """
+    Fields that are set will be updated for all records matching the `filter`
+    """
+    set: trip_segmentsUpdateInput!
+
+    """Restricts the mutation's impact to records matching the criteria"""
+    filter: trip_segmentsFilter
+
+    """
+    The maximum number of records in the collection permitted to be affected
+    """
+    atMost: Int! = 1
+  ): trip_segmentsUpdateResponse!
 
   """Updates zero or more records in the `trip_uploads` collection"""
   updatetrip_uploadsCollection(
@@ -364,8 +394,10 @@ type photos {  id: UUID!
   location: Opaque
   captured_at: Datetime
   created_at: Datetime
+  segment_id: UUID
   trips: trips
   profiles: profiles
+  trip_segments: trip_segments
 }
 
 type photosConnection {
@@ -396,6 +428,7 @@ input photosFilter {
   location: OpaqueFilter
   captured_at: DatetimeFilter
   created_at: DatetimeFilter
+  segment_id: UUIDFilter
   """
   Returns true only if all its inner filters are true, otherwise returns false
   """
@@ -420,6 +453,7 @@ input photosInsertInput {
   location: Opaque
   captured_at: Datetime
   created_at: Datetime
+  segment_id: UUID
 }
 
 type photosInsertResponse {
@@ -440,6 +474,7 @@ input photosOrderBy {
   location: OrderByDirection
   captured_at: OrderByDirection
   created_at: OrderByDirection
+  segment_id: OrderByDirection
 }
 
 input photosUpdateInput {
@@ -452,6 +487,7 @@ input photosUpdateInput {
   location: Opaque
   captured_at: Datetime
   created_at: Datetime
+  segment_id: UUID
 }
 
 type photosUpdateResponse {
@@ -539,6 +575,30 @@ type profiles {  id: UUID!
     """Sort order to apply to the collection"""
     orderBy: [photosOrderBy!]
   ): photosConnection
+  trip_segmentsCollection(
+    """Query the first `n` records in the collection"""
+    first: Int
+
+    """Query the last `n` records in the collection"""
+    last: Int
+
+    """Query values in the collection before the provided cursor"""
+    before: Cursor
+
+    """Query values in the collection after the provided cursor"""
+    after: Cursor
+
+    """
+    Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.
+    """
+    offset: Int
+
+    """Filters to apply to the results set when querying from the collection"""
+    filter: trip_segmentsFilter
+
+    """Sort order to apply to the collection"""
+    orderBy: [trip_segmentsOrderBy!]
+  ): trip_segmentsConnection
 }
 
 type profilesConnection {
@@ -622,6 +682,7 @@ type profilesUpdateResponse {
 """The root type for querying data"""
 type Query {
   generate_trip_slug(trip_name: String!): String
+  get_segment_geometry_geojson(segment_id: UUID!): String
   get_trip_geometry_geojson(trip_id: UUID!): String
   """A pagable collection of type `photos`"""
   photosCollection(
@@ -700,6 +761,32 @@ type Query {
     """Sort order to apply to the collection"""
     orderBy: [spatial_ref_sysOrderBy!]
   ): spatial_ref_sysConnection
+
+  """A pagable collection of type `trip_segments`"""
+  trip_segmentsCollection(
+    """Query the first `n` records in the collection"""
+    first: Int
+
+    """Query the last `n` records in the collection"""
+    last: Int
+
+    """Query values in the collection before the provided cursor"""
+    before: Cursor
+
+    """Query values in the collection after the provided cursor"""
+    after: Cursor
+
+    """
+    Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.
+    """
+    offset: Int
+
+    """Filters to apply to the results set when querying from the collection"""
+    filter: trip_segmentsFilter
+
+    """Sort order to apply to the collection"""
+    orderBy: [trip_segmentsOrderBy!]
+  ): trip_segmentsConnection
 
   """A pagable collection of type `trip_uploads`"""
   trip_uploadsCollection(
@@ -857,6 +944,166 @@ input TimeListFilter {
   overlaps: [Time!]
 }
 
+type trip_segments {  id: UUID!
+  trip_id: UUID!
+  user_id: UUID!
+  name: String
+  description: String
+  geometry: Opaque
+  start_date: Datetime
+  end_date: Datetime
+  sort_order: Int
+  created_at: Datetime
+  trips: trips
+  profiles: profiles
+  photosCollection(
+    """Query the first `n` records in the collection"""
+    first: Int
+
+    """Query the last `n` records in the collection"""
+    last: Int
+
+    """Query values in the collection before the provided cursor"""
+    before: Cursor
+
+    """Query values in the collection after the provided cursor"""
+    after: Cursor
+
+    """
+    Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.
+    """
+    offset: Int
+
+    """Filters to apply to the results set when querying from the collection"""
+    filter: photosFilter
+
+    """Sort order to apply to the collection"""
+    orderBy: [photosOrderBy!]
+  ): photosConnection
+  trip_uploadsCollection(
+    """Query the first `n` records in the collection"""
+    first: Int
+
+    """Query the last `n` records in the collection"""
+    last: Int
+
+    """Query values in the collection before the provided cursor"""
+    before: Cursor
+
+    """Query values in the collection after the provided cursor"""
+    after: Cursor
+
+    """
+    Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.
+    """
+    offset: Int
+
+    """Filters to apply to the results set when querying from the collection"""
+    filter: trip_uploadsFilter
+
+    """Sort order to apply to the collection"""
+    orderBy: [trip_uploadsOrderBy!]
+  ): trip_uploadsConnection
+}
+
+type trip_segmentsConnection {
+  edges: [trip_segmentsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type trip_segmentsDeleteResponse {
+  """Count of the records impacted by the mutation"""
+  affectedCount: Int!
+
+  """Array of records impacted by the mutation"""
+  records: [trip_segments!]!
+}
+
+type trip_segmentsEdge {
+  cursor: String!
+  node: trip_segments!
+}
+
+input trip_segmentsFilter {
+  id: UUIDFilter
+  trip_id: UUIDFilter
+  user_id: UUIDFilter
+  name: StringFilter
+  description: StringFilter
+  geometry: OpaqueFilter
+  start_date: DatetimeFilter
+  end_date: DatetimeFilter
+  sort_order: IntFilter
+  created_at: DatetimeFilter
+  """
+  Returns true only if all its inner filters are true, otherwise returns false
+  """
+  and: [trip_segmentsFilter!]
+
+  """
+  Returns true if at least one of its inner filters is true, otherwise returns false
+  """
+  or: [trip_segmentsFilter!]
+
+  """Negates a filter"""
+  not: trip_segmentsFilter
+}
+
+input trip_segmentsInsertInput {
+  id: UUID
+  trip_id: UUID
+  user_id: UUID
+  name: String
+  description: String
+  geometry: Opaque
+  start_date: Datetime
+  end_date: Datetime
+  sort_order: Int
+  created_at: Datetime
+}
+
+type trip_segmentsInsertResponse {
+  """Count of the records impacted by the mutation"""
+  affectedCount: Int!
+
+  """Array of records impacted by the mutation"""
+  records: [trip_segments!]!
+}
+
+input trip_segmentsOrderBy {
+  id: OrderByDirection
+  trip_id: OrderByDirection
+  user_id: OrderByDirection
+  name: OrderByDirection
+  description: OrderByDirection
+  geometry: OrderByDirection
+  start_date: OrderByDirection
+  end_date: OrderByDirection
+  sort_order: OrderByDirection
+  created_at: OrderByDirection
+}
+
+input trip_segmentsUpdateInput {
+  id: UUID
+  trip_id: UUID
+  user_id: UUID
+  name: String
+  description: String
+  geometry: Opaque
+  start_date: Datetime
+  end_date: Datetime
+  sort_order: Int
+  created_at: Datetime
+}
+
+type trip_segmentsUpdateResponse {
+  """Count of the records impacted by the mutation"""
+  affectedCount: Int!
+
+  """Array of records impacted by the mutation"""
+  records: [trip_segments!]!
+}
+
 type trip_uploads {  id: UUID!
   trip_id: UUID!
   user_id: UUID!
@@ -865,8 +1112,10 @@ type trip_uploads {  id: UUID!
   file_size_bytes: BigInt
   raw_geometry: Opaque
   created_at: Datetime
+  segment_id: UUID
   trips: trips
   profiles: profiles
+  trip_segments: trip_segments
 }
 
 type trip_uploadsConnection {
@@ -896,6 +1145,7 @@ input trip_uploadsFilter {
   file_size_bytes: BigIntFilter
   raw_geometry: OpaqueFilter
   created_at: DatetimeFilter
+  segment_id: UUIDFilter
   """
   Returns true only if all its inner filters are true, otherwise returns false
   """
@@ -919,6 +1169,7 @@ input trip_uploadsInsertInput {
   file_size_bytes: BigInt
   raw_geometry: Opaque
   created_at: Datetime
+  segment_id: UUID
 }
 
 type trip_uploadsInsertResponse {
@@ -938,6 +1189,7 @@ input trip_uploadsOrderBy {
   file_size_bytes: OrderByDirection
   raw_geometry: OrderByDirection
   created_at: OrderByDirection
+  segment_id: OrderByDirection
 }
 
 input trip_uploadsUpdateInput {
@@ -949,6 +1201,7 @@ input trip_uploadsUpdateInput {
   file_size_bytes: BigInt
   raw_geometry: Opaque
   created_at: Datetime
+  segment_id: UUID
 }
 
 type trip_uploadsUpdateResponse {
@@ -1022,6 +1275,30 @@ type trips {  id: UUID!
     """Sort order to apply to the collection"""
     orderBy: [photosOrderBy!]
   ): photosConnection
+  trip_segmentsCollection(
+    """Query the first `n` records in the collection"""
+    first: Int
+
+    """Query the last `n` records in the collection"""
+    last: Int
+
+    """Query values in the collection before the provided cursor"""
+    before: Cursor
+
+    """Query values in the collection after the provided cursor"""
+    after: Cursor
+
+    """
+    Skip n values from the after cursor. Alternative to cursor pagination. Backward pagination not supported.
+    """
+    offset: Int
+
+    """Filters to apply to the results set when querying from the collection"""
+    filter: trip_segmentsFilter
+
+    """Sort order to apply to the collection"""
+    orderBy: [trip_segmentsOrderBy!]
+  ): trip_segmentsConnection
   trips_summary_geometry_geojson: String
 }
 

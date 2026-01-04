@@ -1,4 +1,5 @@
-import { ScrollView } from "react-native";
+import { useState } from "react";
+import { ScrollView, Image } from "react-native";
 import { useLazyLoadQuery } from "react-relay";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackScreenProps, NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -11,10 +12,16 @@ import { Pressable } from "@coinbase/cds-mobile/system/Pressable";
 import { Tag } from "@coinbase/cds-mobile/tag";
 import { RelayProvider } from "@/components/RelayProvider";
 import { TripMap } from "@/components/TripMap";
+import { GpxUpload } from "@/components/GpxUpload";
+import { PhotoUpload } from "@/components/PhotoUpload";
+import { SegmentList } from "@/components/SegmentList";
+import { useAuth } from "@/lib/AuthContext";
 import { MainStackParamList } from "@/navigation/types";
 import type { queriesTripQuery } from "@/graphql/__generated__/queriesTripQuery.graphql";
 import TripQueryNode from "@/graphql/__generated__/queriesTripQuery.graphql";
 import type { Feature, LineString, MultiLineString } from "geojson";
+
+const R2_PUBLIC_URL = process.env.EXPO_PUBLIC_R2_PUBLIC_URL || "";
 
 type Props = NativeStackScreenProps<MainStackParamList, "Trip">;
 
@@ -26,15 +33,19 @@ function TripContent({
   tripSlug: string;
 }) {
   const navigation = useNavigation<NativeStackNavigationProp<MainStackParamList>>();
+  const { user } = useAuth();
+  const [fetchKey, setFetchKey] = useState(0);
 
   const data = useLazyLoadQuery<queriesTripQuery>(
     TripQueryNode,
     { username, slug: tripSlug },
-    { fetchPolicy: "store-and-network" }
+    { fetchPolicy: "store-and-network", fetchKey }
   );
 
   const profile = data.profilesCollection?.edges?.[0]?.node;
   const trip = profile?.tripsCollection?.edges?.[0]?.node;
+  const isOwner = user?.id && trip?.user_id && user.id === trip.user_id;
+  const photos = trip?.photosCollection?.edges?.map((e) => e.node) ?? [];
 
   if (!profile) {
     return (
@@ -115,6 +126,18 @@ function TripContent({
                 <Tag colorScheme="yellow">Draft</Tag>
               )}
             </HStack>
+            {isOwner && (
+              <HStack gap={2}>
+                <GpxUpload
+                  tripId={trip.id}
+                  onUploadComplete={() => setFetchKey((k) => k + 1)}
+                />
+                <PhotoUpload
+                  tripId={trip.id}
+                  onUploadComplete={() => setFetchKey((k) => k + 1)}
+                />
+              </HStack>
+            )}
           </VStack>
 
           {/* Map */}
@@ -124,6 +147,39 @@ function TripContent({
                 <TripMap geojson={geojson} bounds={bounds} />
               </Box>
             </Box>
+          )}
+
+          {/* Segments (owner only) */}
+          {isOwner && (
+            <Box padding={3}>
+              <SegmentList
+                tripRef={trip}
+                onSegmentsChange={() => setFetchKey((k) => k + 1)}
+              />
+            </Box>
+          )}
+
+          {/* Photos */}
+          {photos.length > 0 && (
+            <VStack padding={3} gap={3}>
+              <TextTitle3>Photos</TextTitle3>
+              <HStack gap={2} style={{ flexWrap: "wrap" }}>
+                {photos.map((photo) => (
+                  <Box
+                    key={photo.id}
+                    width={100}
+                    height={100}
+                    borderRadius={200}
+                    overflow="hidden"
+                  >
+                    <Image
+                      source={{ uri: `${R2_PUBLIC_URL}/${photo.r2_key_thumb}` }}
+                      style={{ width: 100, height: 100 }}
+                    />
+                  </Box>
+                ))}
+              </HStack>
+            </VStack>
           )}
 
           {/* Trip Details */}

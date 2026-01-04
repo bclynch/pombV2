@@ -2,13 +2,13 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 
-interface Profile {
+type Profile = {
   id: string;
   username: string | null;
   avatar_url: string | null;
-}
+};
 
-interface AuthContextType {
+type AuthContextType = {
   session: Session | null;
   user: User | null;
   profile: Profile | null;
@@ -17,7 +17,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
-}
+};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

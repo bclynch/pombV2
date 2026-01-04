@@ -2,19 +2,37 @@ import { useState, useCallback } from "react";
 import * as toGeoJSON from "@tmcw/togeojson";
 import * as turf from "@turf/turf";
 import { supabase } from "../lib/supabase";
-import type { Feature, LineString, MultiLineString } from "geojson";
+import type { Feature, LineString, MultiLineString, Position } from "geojson";
 
-interface UploadProgress {
+type UploadProgress = {
   phase: "idle" | "parsing" | "uploading" | "saving" | "complete" | "error";
   current: number;
   total: number;
   message: string;
-}
+};
 
-interface UseTripUploadResult {
+type ParsedFile = {
+  file: File;
+  lines: Feature<LineString>[];
+  coordinates: Position[][];
+};
+
+type UseTripUploadResult = {
   upload: (tripId: string, files: File[]) => Promise<void>;
   progress: UploadProgress;
   error: string | null;
+};
+
+function getSegmentName(filename: string): string {
+  // Remove file extension
+  return filename.replace(/\.[^/.]+$/, "");
+}
+
+function coordinatesToWkt(coordinates: Position[][]): string {
+  const wktCoords = coordinates
+    .map((line) => `(${line.map((c) => `${c[0]} ${c[1]}`).join(", ")})`)
+    .join(", ");
+  return `SRID=4326;MULTILINESTRING(${wktCoords})`;
 }
 
 export function useTripUpload(): UseTripUploadResult {
@@ -31,9 +49,15 @@ export function useTripUpload(): UseTripUploadResult {
     setProgress({ phase: "parsing", current: 0, total: files.length, message: "Parsing GPX files..." });
 
     try {
-      const allLineStrings: Feature<LineString>[] = [];
+      const { data: session } = await supabase.auth.getSession();
+      if (!session?.session?.user) {
+        throw new Error("You must be logged in to upload files");
+      }
+      const userId = session.session.user.id;
 
-      // 1. Parse all GPX files
+      // 1. Parse all GPX files and store per-file data
+      const parsedFiles: ParsedFile[] = [];
+
       for (let i = 0; i < files.length; i++) {
         setProgress({
           phase: "parsing",
@@ -50,14 +74,29 @@ export function useTripUpload(): UseTripUploadResult {
         const lines = geoJson.features.filter(
           (f): f is Feature<LineString> => f.geometry?.type === "LineString"
         );
-        allLineStrings.push(...lines);
+
+        if (lines.length > 0) {
+          parsedFiles.push({
+            file: files[i],
+            lines,
+            coordinates: lines.map((f) => f.geometry.coordinates),
+          });
+        }
       }
 
-      if (allLineStrings.length === 0) {
+      if (parsedFiles.length === 0) {
         throw new Error("No track data found in GPX files");
       }
 
-      // 2. Fetch existing geometry and merge
+      // 2. Get current segment count for sort_order
+      const { count: segmentCount } = await supabase
+        .from("trip_segments")
+        .select("*", { count: "exact", head: true })
+        .eq("trip_id", tripId);
+
+      let currentSortOrder = (segmentCount ?? 0) + 1;
+
+      // 3. Collect all coordinates for trip summary geometry
       setProgress({
         phase: "parsing",
         current: files.length,
@@ -71,7 +110,7 @@ export function useTripUpload(): UseTripUploadResult {
         .eq("id", tripId)
         .single();
 
-      let allCoordinates = allLineStrings.map((f) => f.geometry.coordinates);
+      let allCoordinates: Position[][] = parsedFiles.flatMap((pf) => pf.coordinates);
 
       if (existingTrip?.summary_geometry) {
         try {
@@ -104,61 +143,84 @@ export function useTripUpload(): UseTripUploadResult {
       const bbox = turf.bbox(simplified);
       const [minLng, minLat, maxLng, maxLat] = bbox;
 
-      // 3. Upload raw files to R2
+      // 4. Upload files, create segments, and link uploads
       setProgress({
         phase: "uploading",
         current: 0,
-        total: files.length,
+        total: parsedFiles.length,
         message: "Uploading files to storage...",
       });
 
-      for (let i = 0; i < files.length; i++) {
+      for (let i = 0; i < parsedFiles.length; i++) {
+        const { file, coordinates } = parsedFiles[i];
+
         setProgress({
           phase: "uploading",
           current: i + 1,
-          total: files.length,
-          message: `Uploading ${files[i].name}...`,
+          total: parsedFiles.length,
+          message: `Uploading ${file.name}...`,
         });
 
+        // Create segment for this file
+        const segmentWkt = coordinatesToWkt(coordinates);
+        const { data: segmentData, error: segmentError } = await supabase
+          .from("trip_segments")
+          .insert({
+            trip_id: tripId,
+            user_id: userId,
+            name: getSegmentName(file.name),
+            geometry: segmentWkt,
+            sort_order: currentSortOrder++,
+          })
+          .select("id")
+          .single();
+
+        if (segmentError) {
+          console.warn(`Failed to create segment for ${file.name}:`, segmentError);
+          continue;
+        }
+
+        const segmentId = segmentData.id;
+
+        // Upload file to R2
         const { data: signedUrlData, error: signedUrlError } = await supabase.functions.invoke(
           "upload-gpx",
           {
             body: {
-              filename: files[i].name,
-              fileType: files[i].type || "application/gpx+xml",
+              filename: file.name,
+              fileType: file.type || "application/gpx+xml",
               tripId,
             },
           }
         );
 
         if (signedUrlError || !signedUrlData?.uploadUrl) {
-          console.warn(`Failed to get signed URL for ${files[i].name}:`, signedUrlError);
+          console.warn(`Failed to get signed URL for ${file.name}:`, signedUrlError);
           continue;
         }
 
         const uploadResponse = await fetch(signedUrlData.uploadUrl, {
           method: "PUT",
-          body: files[i],
+          body: file,
           headers: {
-            "Content-Type": files[i].type || "application/gpx+xml",
+            "Content-Type": file.type || "application/gpx+xml",
           },
         });
 
         if (!uploadResponse.ok) {
-          console.warn(`Failed to upload ${files[i].name} to R2`);
+          console.warn(`Failed to upload ${file.name} to R2`);
           continue;
         }
 
-        const { data: session } = await supabase.auth.getSession();
-        if (session?.session?.user) {
-          await supabase.from("trip_uploads").insert({
-            trip_id: tripId,
-            user_id: session.session.user.id,
-            filename: files[i].name,
-            r2_key: signedUrlData.key,
-            file_size_bytes: files[i].size,
-          });
-        }
+        // Create trip_upload record linked to segment
+        await supabase.from("trip_uploads").insert({
+          trip_id: tripId,
+          user_id: userId,
+          segment_id: segmentId,
+          filename: file.name,
+          r2_key: signedUrlData.key,
+          file_size_bytes: file.size,
+        });
       }
 
       // 4. Save merged geometry to trips table

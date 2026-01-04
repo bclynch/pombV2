@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLazyLoadQuery } from "react-relay";
 import { TextTitle1, TextTitle3, TextBody, TextLabel2, Link } from "@coinbase/cds-web/typography";
@@ -5,9 +6,15 @@ import { Box, HStack, VStack, Grid } from "@coinbase/cds-web/layout";
 import { Tag } from "@coinbase/cds-web/tag";
 import { RelayProvider } from "../components/RelayProvider";
 import { TripMap } from "../components/TripMap";
+import { PhotoUpload } from "../components/PhotoUpload";
+import { GpxUpload } from "../components/GpxUpload";
+import { SegmentList } from "../components/SegmentList";
+import { useAuth } from "../lib/AuthContext";
 import type { TripQueryWebQuery } from "../graphql/__generated__/TripQueryWebQuery.graphql";
 import TripQueryNode from "../graphql/__generated__/TripQueryWebQuery.graphql";
 import type { Feature, LineString, MultiLineString } from "geojson";
+
+const R2_PUBLIC_URL = import.meta.env.VITE_R2_PUBLIC_URL || "";
 
 function TripContent({
   username,
@@ -16,14 +23,18 @@ function TripContent({
   username: string;
   tripSlug: string;
 }) {
+  const { user } = useAuth();
+  const [fetchKey, setFetchKey] = useState(0);
   const data = useLazyLoadQuery<TripQueryWebQuery>(
     TripQueryNode,
     { username, slug: tripSlug },
-    { fetchPolicy: "store-and-network" }
+    { fetchPolicy: "store-and-network", fetchKey }
   );
 
   const profile = data.profilesCollection?.edges?.[0]?.node;
   const trip = profile?.tripsCollection?.edges?.[0]?.node;
+  const isOwner = user?.id && trip?.user_id && user.id === trip.user_id;
+  const photos = trip?.photosCollection?.edges?.map((e) => e.node) ?? [];
 
   if (!profile) {
     return (
@@ -110,6 +121,18 @@ function TripContent({
                 <Tag colorScheme="yellow">Draft</Tag>
               )}
             </HStack>
+            {isOwner && (
+              <HStack gap={2}>
+                <GpxUpload
+                  tripId={trip.id}
+                  onUploadComplete={() => setFetchKey((k) => k + 1)}
+                />
+                <PhotoUpload
+                  tripId={trip.id}
+                  onUploadComplete={() => setFetchKey((k) => k + 1)}
+                />
+              </HStack>
+            )}
           </VStack>
         </Box>
       </Box>
@@ -121,6 +144,48 @@ function TripContent({
             <Box borderRadius={300} overflow="hidden" width="100%">
               <TripMap geojson={geojson} bounds={bounds} style={{ height: 500 }} />
             </Box>
+          </Box>
+        </Box>
+      )}
+
+      {/* Segments (owner only) */}
+      {isOwner && (
+        <Box as="section" padding={3} width="100%">
+          <Box maxWidth={1200} width="100%" style={{ marginLeft: "auto", marginRight: "auto" }}>
+            <SegmentList
+              tripRef={trip}
+              onSegmentsChange={() => setFetchKey((k) => k + 1)}
+            />
+          </Box>
+        </Box>
+      )}
+
+      {/* Photos */}
+      {photos.length > 0 && (
+        <Box as="section" padding={3} width="100%">
+          <Box maxWidth={1200} width="100%" style={{ marginLeft: "auto", marginRight: "auto" }}>
+            <VStack gap={3}>
+              <TextTitle3>Photos</TextTitle3>
+              <Grid columnMin={200} gap={2}>
+                {photos.map((photo) => (
+                  <Box
+                    key={photo.id}
+                    borderRadius={200}
+                    overflow="hidden"
+                    style={{ aspectRatio: "1" }}
+                  >
+                    <Box
+                      as="img"
+                      src={`${R2_PUBLIC_URL}/${photo.r2_key_thumb}`}
+                      alt=""
+                      width="100%"
+                      height="100%"
+                      style={{ objectFit: "cover" }}
+                    />
+                  </Box>
+                ))}
+              </Grid>
+            </VStack>
           </Box>
         </Box>
       )}

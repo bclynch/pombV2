@@ -7,12 +7,12 @@ import { TextTitle1 } from "@coinbase/cds-mobile/typography/TextTitle1";
 import { Pressable } from "@coinbase/cds-mobile/system/Pressable";
 import { supabase } from "@/lib/supabase";
 
-interface AvatarUploadProps {
+type AvatarUploadProps = {
   userId: string;
   currentAvatarUrl: string | null;
   username: string | null;
   onUploadComplete?: (newAvatarUrl: string) => void;
-}
+};
 
 export function AvatarUpload({
   userId,

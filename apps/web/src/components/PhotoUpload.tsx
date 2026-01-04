@@ -2,63 +2,66 @@ import { useRef } from "react";
 import { Box, VStack } from "@coinbase/cds-web/layout";
 import { Button } from "@coinbase/cds-web/buttons";
 import { TextBody, TextLabel2 } from "@coinbase/cds-web/typography";
-import { useTripUpload } from "../hooks/useTripUpload";
+import { usePhotoUpload } from "../hooks/usePhotoUpload";
 
-type GpxUploadProps = {
+type PhotoUploadProps = {
   tripId: string;
   onUploadComplete?: () => void;
 };
 
-export function GpxUpload({ tripId, onUploadComplete }: GpxUploadProps) {
-  const { upload, progress, error } = useTripUpload();
+export function PhotoUpload({ tripId, onUploadComplete }: PhotoUploadProps) {
+  const { upload, progress, error } = usePhotoUpload();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    const gpxFiles = Array.from(files).filter(
-      (file) => file.name.toLowerCase().endsWith(".gpx") || file.type.includes("gpx") || file.type.includes("xml")
+    const imageFiles = Array.from(files).filter((file) =>
+      file.type.startsWith("image/")
     );
 
-    if (gpxFiles.length === 0) {
-      alert("Please select GPX files (.gpx)");
+    if (imageFiles.length === 0) {
+      alert("Please select image files");
       return;
     }
 
-    await upload(tripId, gpxFiles);
+    await upload(tripId, imageFiles);
 
     // Reset file input
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
 
-    alert("Trip updated with GPX data!");
-    onUploadComplete?.();
+    if (progress.phase !== "error") {
+      onUploadComplete?.();
+    }
   };
 
-  const isProcessing = ["parsing", "uploading", "saving"].includes(progress.phase);
+  const isProcessing = ["processing", "uploading", "saving"].includes(
+    progress.phase
+  );
 
   return (
     <VStack gap={2}>
       <input
         ref={fileInputRef}
         type="file"
-        accept=".gpx,application/gpx+xml,text/xml"
+        accept="image/*"
         multiple
         onChange={handleFileChange}
         disabled={isProcessing}
         style={{ display: "none" }}
-        id={`gpx-upload-${tripId}`}
+        id={`photo-upload-${tripId}`}
       />
       <Button
         as="label"
-        htmlFor={`gpx-upload-${tripId}`}
+        htmlFor={`photo-upload-${tripId}`}
         variant={isProcessing ? "secondary" : "primary"}
         disabled={isProcessing}
         style={{ cursor: isProcessing ? "not-allowed" : "pointer" }}
       >
-        {isProcessing ? progress.message : "Add GPX Files"}
+        {isProcessing ? progress.message : "Add Photos"}
       </Button>
 
       {isProcessing && progress.total > 0 && (

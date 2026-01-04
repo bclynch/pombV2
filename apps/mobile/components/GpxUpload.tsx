@@ -7,10 +7,10 @@ import { TextLabel2 } from "@coinbase/cds-mobile/typography/TextLabel2";
 import { Box, VStack } from "@coinbase/cds-mobile/layout";
 import { useTripUpload } from "@/hooks/useTripUpload";
 
-interface GpxUploadProps {
+type GpxUploadProps = {
   tripId: string;
   onUploadComplete?: () => void;
-}
+};
 
 export function GpxUpload({ tripId, onUploadComplete }: GpxUploadProps) {
   const { upload, progress, error } = useTripUpload();

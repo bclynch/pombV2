@@ -59,7 +59,7 @@ if lsof -i :54321 -sTCP:LISTEN 2>/dev/null | grep -q 'supabase'; then
     echo -e "${GREEN}✓ Edge functions are already running${NC}"
   else
     echo -e "${YELLOW}Starting edge functions...${NC}"
-    npx supabase functions serve &
+    npx supabase functions serve --env-file supabase/functions/.env.local &
     EDGE_PID=$!
     sleep 3
 
@@ -71,7 +71,7 @@ if lsof -i :54321 -sTCP:LISTEN 2>/dev/null | grep -q 'supabase'; then
   fi
 else
   echo -e "${YELLOW}Starting edge functions...${NC}"
-  npx supabase functions serve &
+  npx supabase functions serve --env-file supabase/functions/.env.local &
   EDGE_PID=$!
   sleep 3
 

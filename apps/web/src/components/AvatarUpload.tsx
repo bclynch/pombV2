@@ -5,12 +5,12 @@ import { Pressable } from "@coinbase/cds-web/system";
 import { Spinner } from "@coinbase/cds-web/loaders";
 import { supabase } from "../lib/supabase";
 
-interface AvatarUploadProps {
+type AvatarUploadProps = {
   userId: string;
   currentAvatarUrl: string | null;
   username: string | null;
   onUploadComplete?: (newAvatarUrl: string) => void;
-}
+};
 
 async function resizeImage(file: File, maxSize: number): Promise<Blob> {
   return new Promise((resolve, reject) => {

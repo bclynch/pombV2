@@ -1,5 +1,5 @@
 import { useState, useCallback, type FormEvent } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useLazyLoadQuery, useMutation } from "react-relay";
 import { Button } from "@coinbase/cds-web/buttons";
 import { TextTitle1, TextTitle3, TextBody, TextLabel2 } from "@coinbase/cds-web/typography";
@@ -16,7 +16,8 @@ import ProfileQueryNode from "../graphql/__generated__/ProfileQueryWebQuery.grap
 import CreateTripMutationNode from "../graphql/__generated__/mutationsWebCreateTripMutation.graphql";
 
 function ProfileContent({ username }: { username: string }) {
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [showNewTripModal, setShowNewTripModal] = useState(false);
   const [tripName, setTripName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -108,6 +109,15 @@ function ProfileContent({ username }: { username: string }) {
             <HStack gap={3}>
               <Button variant="primary" onClick={() => setShowNewTripModal(true)}>
                 New Trip
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={async () => {
+                  await signOut();
+                  navigate("/");
+                }}
+              >
+                Log Out
               </Button>
             </HStack>
           )}

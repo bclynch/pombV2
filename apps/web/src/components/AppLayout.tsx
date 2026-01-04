@@ -2,9 +2,9 @@ import type { ReactNode } from "react";
 import { Box } from "@coinbase/cds-web/layout";
 import { AppHeader } from "./AppHeader";
 
-interface AppLayoutProps {
+type AppLayoutProps = {
   children: ReactNode;
-}
+};
 
 export function AppLayout({ children }: AppLayoutProps) {
   return (

@@ -91,6 +91,24 @@ Client Apps (web/, mobile/)
 - **Build**: Turborepo, Vite (web), Metro (mobile)
 - **React**: 19.1.0 (pinned across monorepo via overrides)
 
+## TypeScript Guidelines
+
+**Use `type` instead of `interface`**: This codebase exclusively uses type aliases. Do not use `interface` declarations.
+
+```tsx
+// ❌ BAD - Don't use interface
+interface UserProps {
+  name: string;
+  age: number;
+}
+
+// ✅ GOOD - Use type
+type UserProps = {
+  name: string;
+  age: number;
+};
+```
+
 ## CDS (Coinbase Design System) Guidelines
 
 **IMPORTANT**: Always use CDS components and style props instead of inline styles or custom CSS. Do not use `style={{}}` objects or define `const styles = {}` objects.

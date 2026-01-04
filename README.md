@@ -14,8 +14,14 @@ Run web app + watched relay compiler:
 ## TODO
 
 - Trip screen
-- Upload pics for a trip
-  - attaching to gpx somehow 
+  - Carousel of segments with pics
+  - Zoom to portion of map on focus
+  - ig style story pics for a segment
+  - Ability to like or comment on a segment or photo or post
+  - Ability to add a post to a trip
+- Ability to follow users, get notifs when they update something  
+- Stories style UX on home screen for people you follow
+- Functionality for mobile app to track you and create gpx  
 - Deploy to cloudflare pages
   - Wire up deploy on commit
 - Deploy to google play store   
@@ -37,6 +43,10 @@ Run web app + watched relay compiler:
 - Profile route
 - Create trip UX
 - Refactor for better CDS usage
+- Upload pics for a trip
+  - attaching to gpx somehow 
+- Concept of segments on gpx upload or manual  
+- Only types not interfaces
 
 
 
