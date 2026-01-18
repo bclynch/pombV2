@@ -65,6 +65,20 @@ Client Apps (web/, mobile/)
 - Queries live in `apps/*/graphql/*.ts` using `graphql` tagged template
 - Run `npm run relay` to generate types in `__generated__/` folders
 - Import generated query and use with `useLazyLoadQuery`
+- **Inline fragments in `useFragment`**: Do not extract fragment definitions to variables. Pass the `graphql` tagged template directly to `useFragment`.
+
+```tsx
+// ❌ BAD - Don't extract to a variable
+const MyFragment = graphql`
+  fragment MyComponent_data on MyType { ... }
+`;
+const data = useFragment(MyFragment, ref);
+
+// ✅ GOOD - Inline the fragment
+const data = useFragment(graphql`
+  fragment MyComponent_data on MyType { ... }
+`, ref);
+```
 
 ### Authentication
 - Both apps use Supabase Auth via `lib/AuthContext.tsx`
