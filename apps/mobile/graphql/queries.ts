@@ -53,17 +53,7 @@ export const TripQuery = graphql`
                 bounds_max_lat
                 bounds_max_lng
                 user_id
-                photosCollection(first: 100, orderBy: [{ captured_at: AscNullsLast }]) {
-                  edges {
-                    node {
-                      id
-                      r2_key_thumb
-                      r2_key_large
-                      blurhash
-                      captured_at
-                    }
-                  }
-                }
+                ...PhotoCarouselMobile_trip
                 ...SegmentListMobile_trip
               }
             }

@@ -7,14 +7,13 @@ import { Tag } from "@coinbase/cds-web/tag";
 import { RelayProvider } from "../components/RelayProvider";
 import { TripMap } from "../components/TripMap";
 import { PhotoUpload } from "../components/PhotoUpload";
+import { PhotoCarousel } from "../components/PhotoCarousel";
 import { GpxUpload } from "../components/GpxUpload";
 import { SegmentList } from "../components/SegmentList";
 import { useAuth } from "../lib/AuthContext";
 import type { TripQueryWebQuery } from "../graphql/__generated__/TripQueryWebQuery.graphql";
 import TripQueryNode from "../graphql/__generated__/TripQueryWebQuery.graphql";
 import type { Feature, LineString, MultiLineString } from "geojson";
-
-const R2_PUBLIC_URL = import.meta.env.VITE_R2_PUBLIC_URL || "";
 
 function TripContent({
   username,
@@ -34,7 +33,6 @@ function TripContent({
   const profile = data.profilesCollection?.edges?.[0]?.node;
   const trip = profile?.tripsCollection?.edges?.[0]?.node;
   const isOwner = user?.id && trip?.user_id && user.id === trip.user_id;
-  const photos = trip?.photosCollection?.edges?.map((e) => e.node) ?? [];
 
   if (!profile) {
     return (
@@ -161,34 +159,11 @@ function TripContent({
       )}
 
       {/* Photos */}
-      {photos.length > 0 && (
-        <Box as="section" padding={3} width="100%">
-          <Box maxWidth={1200} width="100%" style={{ marginLeft: "auto", marginRight: "auto" }}>
-            <VStack gap={3}>
-              <TextTitle3>Photos</TextTitle3>
-              <Grid columnMin={200} gap={2}>
-                {photos.map((photo) => (
-                  <Box
-                    key={photo.id}
-                    borderRadius={200}
-                    overflow="hidden"
-                    style={{ aspectRatio: "1" }}
-                  >
-                    <Box
-                      as="img"
-                      src={`${R2_PUBLIC_URL}/${photo.r2_key_thumb}`}
-                      alt=""
-                      width="100%"
-                      height="100%"
-                      style={{ objectFit: "cover" }}
-                    />
-                  </Box>
-                ))}
-              </Grid>
-            </VStack>
-          </Box>
+      <Box as="section" padding={3} width="100%">
+        <Box maxWidth={1200} width="100%" style={{ marginLeft: "auto", marginRight: "auto" }}>
+          <PhotoCarousel tripRef={trip} />
         </Box>
-      )}
+      </Box>
 
       {/* Trip Details */}
       <Box as="section" padding={3} width="100%">

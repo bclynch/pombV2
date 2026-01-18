@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ScrollView, Image } from "react-native";
+import { ScrollView } from "react-native";
 import { useLazyLoadQuery } from "react-relay";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackScreenProps, NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -14,14 +14,13 @@ import { RelayProvider } from "@/components/RelayProvider";
 import { TripMap } from "@/components/TripMap";
 import { GpxUpload } from "@/components/GpxUpload";
 import { PhotoUpload } from "@/components/PhotoUpload";
+import { PhotoCarousel } from "@/components/PhotoCarousel";
 import { SegmentList } from "@/components/SegmentList";
 import { useAuth } from "@/lib/AuthContext";
 import { MainStackParamList } from "@/navigation/types";
 import type { queriesTripQuery } from "@/graphql/__generated__/queriesTripQuery.graphql";
 import TripQueryNode from "@/graphql/__generated__/queriesTripQuery.graphql";
 import type { Feature, LineString, MultiLineString } from "geojson";
-
-const R2_PUBLIC_URL = process.env.EXPO_PUBLIC_R2_PUBLIC_URL || "";
 
 type Props = NativeStackScreenProps<MainStackParamList, "Trip">;
 
@@ -45,7 +44,6 @@ function TripContent({
   const profile = data.profilesCollection?.edges?.[0]?.node;
   const trip = profile?.tripsCollection?.edges?.[0]?.node;
   const isOwner = user?.id && trip?.user_id && user.id === trip.user_id;
-  const photos = trip?.photosCollection?.edges?.map((e) => e.node) ?? [];
 
   if (!profile) {
     return (
@@ -160,27 +158,7 @@ function TripContent({
           )}
 
           {/* Photos */}
-          {photos.length > 0 && (
-            <VStack padding={3} gap={3}>
-              <TextTitle3>Photos</TextTitle3>
-              <HStack gap={2} style={{ flexWrap: "wrap" }}>
-                {photos.map((photo) => (
-                  <Box
-                    key={photo.id}
-                    width={100}
-                    height={100}
-                    borderRadius={200}
-                    overflow="hidden"
-                  >
-                    <Image
-                      source={{ uri: `${R2_PUBLIC_URL}/${photo.r2_key_thumb}` }}
-                      style={{ width: 100, height: 100 }}
-                    />
-                  </Box>
-                ))}
-              </HStack>
-            </VStack>
-          )}
+          <PhotoCarousel tripRef={trip} />
 
           {/* Trip Details */}
           <VStack padding={3} gap={2}>

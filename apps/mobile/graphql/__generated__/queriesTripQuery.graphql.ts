@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ba39cc19f273975e65b25a8042223733>>
+ * @generated SignedSource<<684c1daea09511c35860b958343bb1cf>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -33,22 +33,11 @@ export type queriesTripQuery$data = {
               readonly id: any;
               readonly is_published: boolean | null | undefined;
               readonly name: string;
-              readonly photosCollection: {
-                readonly edges: ReadonlyArray<{
-                  readonly node: {
-                    readonly blurhash: string | null | undefined;
-                    readonly captured_at: any | null | undefined;
-                    readonly id: any;
-                    readonly r2_key_large: string | null | undefined;
-                    readonly r2_key_thumb: string | null | undefined;
-                  };
-                }>;
-              } | null | undefined;
               readonly slug: string;
               readonly start_date: any | null | undefined;
               readonly trips_summary_geometry_geojson: string | null | undefined;
               readonly user_id: any;
-              readonly " $fragmentSpreads": FragmentRefs<"SegmentListMobile_trip">;
+              readonly " $fragmentSpreads": FragmentRefs<"PhotoCarouselMobile_trip" | "SegmentListMobile_trip">;
             };
           }>;
         } | null | undefined;
@@ -229,83 +218,6 @@ v20 = {
   "kind": "ScalarField",
   "name": "user_id",
   "storageKey": null
-},
-v21 = {
-  "alias": null,
-  "args": [
-    {
-      "kind": "Literal",
-      "name": "first",
-      "value": 100
-    },
-    {
-      "kind": "Literal",
-      "name": "orderBy",
-      "value": [
-        {
-          "captured_at": "AscNullsLast"
-        }
-      ]
-    }
-  ],
-  "concreteType": "photosConnection",
-  "kind": "LinkedField",
-  "name": "photosCollection",
-  "plural": false,
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "concreteType": "photosEdge",
-      "kind": "LinkedField",
-      "name": "edges",
-      "plural": true,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "concreteType": "photos",
-          "kind": "LinkedField",
-          "name": "node",
-          "plural": false,
-          "selections": [
-            (v4/*: any*/),
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "r2_key_thumb",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "r2_key_large",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "blurhash",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "captured_at",
-              "storageKey": null
-            }
-          ],
-          "storageKey": null
-        }
-      ],
-      "storageKey": null
-    }
-  ],
-  "storageKey": "photosCollection(first:100,orderBy:[{\"captured_at\":\"AscNullsLast\"}])"
 };
 return {
   "fragment": {
@@ -382,7 +294,11 @@ return {
                               (v18/*: any*/),
                               (v19/*: any*/),
                               (v20/*: any*/),
-                              (v21/*: any*/),
+                              {
+                                "args": null,
+                                "kind": "FragmentSpread",
+                                "name": "PhotoCarouselMobile_trip"
+                              },
                               {
                                 "args": null,
                                 "kind": "FragmentSpread",
@@ -484,7 +400,83 @@ return {
                               (v18/*: any*/),
                               (v19/*: any*/),
                               (v20/*: any*/),
-                              (v21/*: any*/),
+                              {
+                                "alias": null,
+                                "args": [
+                                  {
+                                    "kind": "Literal",
+                                    "name": "first",
+                                    "value": 100
+                                  },
+                                  {
+                                    "kind": "Literal",
+                                    "name": "orderBy",
+                                    "value": [
+                                      {
+                                        "captured_at": "AscNullsLast"
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "concreteType": "photosConnection",
+                                "kind": "LinkedField",
+                                "name": "photosCollection",
+                                "plural": false,
+                                "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "concreteType": "photosEdge",
+                                    "kind": "LinkedField",
+                                    "name": "edges",
+                                    "plural": true,
+                                    "selections": [
+                                      {
+                                        "alias": null,
+                                        "args": null,
+                                        "concreteType": "photos",
+                                        "kind": "LinkedField",
+                                        "name": "node",
+                                        "plural": false,
+                                        "selections": [
+                                          (v4/*: any*/),
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "kind": "ScalarField",
+                                            "name": "r2_key_thumb",
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "kind": "ScalarField",
+                                            "name": "r2_key_large",
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "kind": "ScalarField",
+                                            "name": "blurhash",
+                                            "storageKey": null
+                                          },
+                                          {
+                                            "alias": null,
+                                            "args": null,
+                                            "kind": "ScalarField",
+                                            "name": "captured_at",
+                                            "storageKey": null
+                                          }
+                                        ],
+                                        "storageKey": null
+                                      }
+                                    ],
+                                    "storageKey": null
+                                  }
+                                ],
+                                "storageKey": "photosCollection(first:100,orderBy:[{\"captured_at\":\"AscNullsLast\"}])"
+                              },
                               {
                                 "alias": null,
                                 "args": [
@@ -601,16 +593,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "be5c8e1105a82262e18515894073e9fe",
+    "cacheID": "f5727ac001c31f331fd9822afe50ffb6",
     "id": null,
     "metadata": {},
     "name": "queriesTripQuery",
     "operationKind": "query",
-    "text": "query queriesTripQuery(\n  $username: String!\n  $slug: String!\n) {\n  profilesCollection(filter: {username: {eq: $username}}, first: 1) {\n    edges {\n      node {\n        id\n        username\n        avatar_url\n        tripsCollection(filter: {slug: {eq: $slug}}, first: 1) {\n          edges {\n            node {\n              id\n              name\n              slug\n              description\n              is_published\n              created_at\n              start_date\n              end_date\n              trips_summary_geometry_geojson\n              bounds_min_lat\n              bounds_min_lng\n              bounds_max_lat\n              bounds_max_lng\n              user_id\n              photosCollection(first: 100, orderBy: [{captured_at: AscNullsLast}]) {\n                edges {\n                  node {\n                    id\n                    r2_key_thumb\n                    r2_key_large\n                    blurhash\n                    captured_at\n                  }\n                }\n              }\n              ...SegmentListMobile_trip\n            }\n          }\n        }\n      }\n    }\n  }\n}\n\nfragment SegmentListMobile_trip on trips {\n  id\n  trip_segmentsCollection(orderBy: [{sort_order: AscNullsLast}]) {\n    edges {\n      node {\n        id\n        name\n        description\n        sort_order\n        created_at\n        trip_uploadsCollection {\n          edges {\n            node {\n              id\n              filename\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query queriesTripQuery(\n  $username: String!\n  $slug: String!\n) {\n  profilesCollection(filter: {username: {eq: $username}}, first: 1) {\n    edges {\n      node {\n        id\n        username\n        avatar_url\n        tripsCollection(filter: {slug: {eq: $slug}}, first: 1) {\n          edges {\n            node {\n              id\n              name\n              slug\n              description\n              is_published\n              created_at\n              start_date\n              end_date\n              trips_summary_geometry_geojson\n              bounds_min_lat\n              bounds_min_lng\n              bounds_max_lat\n              bounds_max_lng\n              user_id\n              ...PhotoCarouselMobile_trip\n              ...SegmentListMobile_trip\n            }\n          }\n        }\n      }\n    }\n  }\n}\n\nfragment PhotoCarouselMobile_trip on trips {\n  photosCollection(first: 100, orderBy: [{captured_at: AscNullsLast}]) {\n    edges {\n      node {\n        id\n        r2_key_thumb\n        r2_key_large\n        blurhash\n        captured_at\n      }\n    }\n  }\n}\n\nfragment SegmentListMobile_trip on trips {\n  id\n  trip_segmentsCollection(orderBy: [{sort_order: AscNullsLast}]) {\n    edges {\n      node {\n        id\n        name\n        description\n        sort_order\n        created_at\n        trip_uploadsCollection {\n          edges {\n            node {\n              id\n              filename\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "a1214c90153677e643b037245b788b43";
+(node as any).hash = "842f2fe3912cbe58a8a8cd55bd8c5faf";
 
 export default node;
