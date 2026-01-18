@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import * as toGeoJSON from "@tmcw/togeojson";
 import { DOMParser } from "@xmldom/xmldom";
 import * as turf from "@turf/turf";
@@ -52,7 +52,7 @@ export function useTripUpload(): UseTripUploadResult {
   });
   const [error, setError] = useState<string | null>(null);
 
-  const upload = useCallback(async (tripId: string, files: UploadFile[]) => {
+  const upload = async (tripId: string, files: UploadFile[]) => {
     setError(null);
     setProgress({ phase: "parsing", current: 0, total: files.length, message: "Parsing GPX files..." });
 
@@ -280,7 +280,7 @@ export function useTripUpload(): UseTripUploadResult {
         message,
       });
     }
-  }, []);
+  };
 
   return { upload, progress, error };
 }

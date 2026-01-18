@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import type { ViewStyle } from "react-native";
 import * as turf from "@turf/turf";
 import { Box } from "@coinbase/cds-mobile/layout/Box";
@@ -41,7 +41,7 @@ export function TripMap({ geojson, bounds: propBounds, style }: TripMapProps) {
   const cameraRef = useRef<CameraRef | null>(null);
 
   // Calculate bounds from geojson or use provided bounds
-  const bounds = useMemo(() => {
+  const bounds = (() => {
     if (propBounds) {
       return propBounds;
     }
@@ -57,10 +57,10 @@ export function TripMap({ geojson, bounds: propBounds, style }: TripMapProps) {
       maxLng: bbox[2],
       maxLat: bbox[3],
     };
-  }, [geojson, propBounds]);
+  })();
 
   // Get the first coordinate for initial camera position
-  const firstCoordinate = useMemo((): Position => {
+  const firstCoordinate = ((): Position => {
     if (!geojson?.geometry) {
       return [-122.4194, 37.7749];
     }
@@ -70,7 +70,7 @@ export function TripMap({ geojson, bounds: propBounds, style }: TripMapProps) {
       return geojson.geometry.coordinates[0]?.[0] || [-122.4194, 37.7749];
     }
     return [-122.4194, 37.7749];
-  }, [geojson]);
+  })();
 
   useEffect(() => {
     if (cameraRef.current && bounds) {

@@ -1,4 +1,4 @@
-import { useState, useCallback, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useLazyLoadQuery, useMutation } from "react-relay";
 import { Button } from "@coinbase/cds-web/buttons";
@@ -35,33 +35,30 @@ function ProfileContent({ username }: { username: string }) {
   const isOwner = user?.id === profile?.id;
   const trips = profile?.tripsCollection?.edges ?? [];
 
-  const handleCreateTrip = useCallback(
-    (e: FormEvent) => {
-      e.preventDefault();
-      if (!tripName.trim() || !user?.id) return;
+  const handleCreateTrip = (e: FormEvent) => {
+    e.preventDefault();
+    if (!tripName.trim() || !user?.id) return;
 
-      commitCreateTrip({
-        variables: {
-          input: [
-            {
-              name: tripName.trim(),
-              user_id: user.id,
-              is_published: false,
-            },
-          ],
-        },
-        onCompleted: () => {
-          setTripName("");
-          setShowNewTripModal(false);
-          setFetchKey((k) => k + 1);
-        },
-        onError: (error) => {
-          alert(error.message);
-        },
-      });
-    },
-    [tripName, user?.id, commitCreateTrip]
-  );
+    commitCreateTrip({
+      variables: {
+        input: [
+          {
+            name: tripName.trim(),
+            user_id: user.id,
+            is_published: false,
+          },
+        ],
+      },
+      onCompleted: () => {
+        setTripName("");
+        setShowNewTripModal(false);
+        setFetchKey((k) => k + 1);
+      },
+      onError: (error) => {
+        alert(error.message);
+      },
+    });
+  };
 
   if (!profile) {
     return (

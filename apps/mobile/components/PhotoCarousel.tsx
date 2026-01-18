@@ -1,4 +1,4 @@
-import { memo, useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect } from "react";
 import { FlatList, useWindowDimensions, NativeSyntheticEvent, NativeScrollEvent, StyleSheet } from "react-native";
 import { graphql, useFragment } from "react-relay";
 import { Image } from "expo-image";
@@ -15,7 +15,7 @@ type PhotoCarouselProps = {
   tripRef: PhotoCarouselMobile_trip$key;
 };
 
-export const PhotoCarousel = memo(({ tripRef }: PhotoCarouselProps) => {
+export function PhotoCarousel({ tripRef }: PhotoCarouselProps) {
   const data = useFragment(graphql`
     fragment PhotoCarouselMobile_trip on trips {
       photosCollection(first: 100, orderBy: [{ captured_at: AscNullsLast }]) {
@@ -41,7 +41,7 @@ export const PhotoCarousel = memo(({ tripRef }: PhotoCarouselProps) => {
   const flatListRef = useRef<FlatList>(null);
   const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const resetHideTimer = useCallback(() => {
+  const resetHideTimer = () => {
     if (hideTimerRef.current) {
       clearTimeout(hideTimerRef.current);
     }
@@ -49,7 +49,7 @@ export const PhotoCarousel = memo(({ tripRef }: PhotoCarouselProps) => {
     hideTimerRef.current = setTimeout(() => {
       setShowCounter(false);
     }, 10000);
-  }, []);
+  };
 
   useEffect(() => {
     resetHideTimer();
@@ -58,7 +58,7 @@ export const PhotoCarousel = memo(({ tripRef }: PhotoCarouselProps) => {
         clearTimeout(hideTimerRef.current);
       }
     };
-  }, [resetHideTimer]);
+  }, []);
 
   if (photos.length === 0) {
     return null;
@@ -141,7 +141,7 @@ export const PhotoCarousel = memo(({ tripRef }: PhotoCarouselProps) => {
       </Box>
     </VStack>
   );
-});
+}
 
 const styles = StyleSheet.create({
   counterContainer: {

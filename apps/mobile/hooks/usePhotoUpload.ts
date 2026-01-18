@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import { supabase } from "@/lib/supabase";
@@ -56,7 +56,7 @@ export function usePhotoUpload(): UsePhotoUploadResult {
   });
   const [error, setError] = useState<string | null>(null);
 
-  const pickAndUpload = useCallback(async (tripId: string) => {
+  const pickAndUpload = async (tripId: string) => {
     setError(null);
 
     try {
@@ -235,7 +235,7 @@ export function usePhotoUpload(): UsePhotoUploadResult {
 
       return false;
     }
-  }, []);
+  };
 
   return { pickAndUpload, progress, error };
 }

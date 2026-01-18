@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -36,11 +36,11 @@ export function TripsList() {
   const environment = useRelayEnvironment();
   const [refreshedAt, setRefreshedAt] = useState(Date.now());
 
-  const handleUploadComplete = useCallback(() => {
+  const handleUploadComplete = () => {
     fetchQuery(environment, TripsListQueryNode, { first: 10 }, { fetchPolicy: "network-only" })
       .toPromise()
       .then(() => setRefreshedAt(Date.now()));
-  }, [environment]);
+  };
 
   const data = useLazyLoadQuery<queriesTripsListQuery>(
     TripsListQueryNode,

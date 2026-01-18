@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { Alert, TextInput as RNTextInput } from "react-native";
 import { graphql, useFragment } from "react-relay";
 import { Box, VStack, HStack } from "@coinbase/cds-mobile/layout";
@@ -58,7 +58,7 @@ export function SegmentList({ tripRef, onSegmentsChange }: SegmentListProps) {
     setEditingName(segment.name || "");
   };
 
-  const handleSaveEdit = useCallback(async () => {
+  const handleSaveEdit = async () => {
     if (!editingId) return;
     setError(null);
 
@@ -75,14 +75,14 @@ export function SegmentList({ tripRef, onSegmentsChange }: SegmentListProps) {
     setEditingId(null);
     setEditingName("");
     onSegmentsChange?.();
-  }, [editingId, editingName, onSegmentsChange]);
+  };
 
   const handleCancelEdit = () => {
     setEditingId(null);
     setEditingName("");
   };
 
-  const handleDelete = useCallback((segmentId: string, segmentName: string) => {
+  const handleDelete = (segmentId: string, segmentName: string) => {
     Alert.alert(
       "Delete Segment",
       `Are you sure you want to delete "${segmentName || "Untitled"}"?`,
@@ -113,9 +113,9 @@ export function SegmentList({ tripRef, onSegmentsChange }: SegmentListProps) {
         },
       ]
     );
-  }, [onSegmentsChange]);
+  };
 
-  const handleMoveUp = useCallback(async (index: number) => {
+  const handleMoveUp = async (index: number) => {
     if (index === 0) return;
     setError(null);
 
@@ -146,9 +146,9 @@ export function SegmentList({ tripRef, onSegmentsChange }: SegmentListProps) {
     }
 
     onSegmentsChange?.();
-  }, [segments, onSegmentsChange]);
+  };
 
-  const handleMoveDown = useCallback(async (index: number) => {
+  const handleMoveDown = async (index: number) => {
     if (index === segments.length - 1) return;
     setError(null);
 
@@ -179,7 +179,7 @@ export function SegmentList({ tripRef, onSegmentsChange }: SegmentListProps) {
     }
 
     onSegmentsChange?.();
-  }, [segments, onSegmentsChange]);
+  };
 
   const toggleSelection = (id: string) => {
     setSelectedIds((prev) => {
@@ -193,7 +193,7 @@ export function SegmentList({ tripRef, onSegmentsChange }: SegmentListProps) {
     });
   };
 
-  const handleMerge = useCallback(async () => {
+  const handleMerge = async () => {
     if (selectedIds.size < 2) return;
     setIsMerging(true);
     setError(null);
@@ -288,7 +288,7 @@ export function SegmentList({ tripRef, onSegmentsChange }: SegmentListProps) {
     } finally {
       setIsMerging(false);
     }
-  }, [selectedIds, segments, tripId, onSegmentsChange]);
+  };
 
   if (segments.length === 0) {
     return (

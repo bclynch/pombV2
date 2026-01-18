@@ -23,21 +23,21 @@ export function TripMap({ geojson, bounds: propBounds, style }: TripMapProps) {
   const map = useRef<maplibregl.Map | null>(null);
   const hasValidGeometry = Boolean(geojson?.geometry);
 
-  // Get first coordinate for initial center
-  const getFirstCoordinate = (): Position => {
-    if (!geojson?.geometry) {
-      return [-122.4194, 37.7749];
-    }
-    if (geojson.geometry.type === "LineString") {
-      return geojson.geometry.coordinates[0] || [-122.4194, 37.7749];
-    } else if (geojson.geometry.type === "MultiLineString") {
-      return geojson.geometry.coordinates[0]?.[0] || [-122.4194, 37.7749];
-    }
-    return [-122.4194, 37.7749];
-  };
-
   useEffect(() => {
     if (!hasValidGeometry || !mapContainer.current || map.current) return;
+
+    // Get first coordinate for initial center
+    const getFirstCoordinate = (): Position => {
+      if (!geojson?.geometry) {
+        return [-122.4194, 37.7749];
+      }
+      if (geojson.geometry.type === "LineString") {
+        return geojson.geometry.coordinates[0] || [-122.4194, 37.7749];
+      } else if (geojson.geometry.type === "MultiLineString") {
+        return geojson.geometry.coordinates[0]?.[0] || [-122.4194, 37.7749];
+      }
+      return [-122.4194, 37.7749];
+    };
 
     const firstCoord = getFirstCoordinate();
 

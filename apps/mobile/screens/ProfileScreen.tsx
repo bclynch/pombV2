@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { ScrollView, Alert, Modal as RNModal } from "react-native";
 import { useLazyLoadQuery, useMutation } from "react-relay";
 import { useNavigation } from "@react-navigation/native";
@@ -43,7 +43,7 @@ function ProfileContent({ username }: { username: string }) {
   const isOwner = user?.id === profile?.id;
   const trips = profile?.tripsCollection?.edges ?? [];
 
-  const handleCreateTrip = useCallback(() => {
+  const handleCreateTrip = () => {
     if (!tripName.trim() || !user?.id) return;
 
     commitCreateTrip({
@@ -66,7 +66,7 @@ function ProfileContent({ username }: { username: string }) {
         Alert.alert("Error", error.message);
       },
     });
-  }, [tripName, user?.id, commitCreateTrip]);
+  };
 
   if (!profile) {
     return (

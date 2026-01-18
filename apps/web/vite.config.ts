@@ -4,5 +4,12 @@ import relay from 'vite-plugin-relay'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), relay],
+  plugins: [
+    react({
+      babel: {
+        plugins: [['babel-plugin-react-compiler', {}]],
+      },
+    }),
+    relay,
+  ],
 })

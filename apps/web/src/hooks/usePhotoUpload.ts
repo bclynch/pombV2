@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import exifr from "exifr";
 import { encode } from "blurhash";
 import { supabase } from "../lib/supabase";
@@ -147,7 +147,7 @@ export function usePhotoUpload(): UsePhotoUploadResult {
   });
   const [error, setError] = useState<string | null>(null);
 
-  const upload = useCallback(async (tripId: string, files: File[]) => {
+  const upload = async (tripId: string, files: File[]) => {
     setError(null);
     setProgress({
       phase: "processing",
@@ -282,7 +282,7 @@ export function usePhotoUpload(): UsePhotoUploadResult {
         message,
       });
     }
-  }, []);
+  };
 
   return { upload, progress, error };
 }

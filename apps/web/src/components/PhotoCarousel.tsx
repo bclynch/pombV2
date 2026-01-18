@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { graphql, useFragment } from "react-relay";
 import { TextTitle3, TextLabel2 } from "@coinbase/cds-web/typography";
 import { Box, VStack, HStack } from "@coinbase/cds-web/layout";
-import type { PhotoCarousel_trip$key, PhotoCarousel_trip$data } from "./__generated__/PhotoCarousel_trip.graphql";
+import type { PhotoCarousel_trip$key } from "./__generated__/PhotoCarousel_trip.graphql";
 
 const R2_PUBLIC_URL = import.meta.env.VITE_R2_PUBLIC_URL || "";
 
@@ -28,7 +28,6 @@ type PhotoCarouselProps = {
 
 const MAX_WIDTH = 468;
 const ASPECT_RATIO = 1.2;
-const MAX_HEIGHT = MAX_WIDTH * ASPECT_RATIO;
 
 export function PhotoCarousel({ tripRef }: PhotoCarouselProps) {
   const data = useFragment(PhotoCarouselFragment, tripRef);
@@ -41,7 +40,7 @@ export function PhotoCarousel({ tripRef }: PhotoCarouselProps) {
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const touchStartX = useRef<number | null>(null);
 
-  const resetHideTimer = useCallback(() => {
+  const resetHideTimer = () => {
     if (hideTimerRef.current) {
       clearTimeout(hideTimerRef.current);
     }
@@ -49,16 +48,19 @@ export function PhotoCarousel({ tripRef }: PhotoCarouselProps) {
     hideTimerRef.current = setTimeout(() => {
       setShowCounter(false);
     }, 10000);
-  }, []);
+  };
 
   useEffect(() => {
-    resetHideTimer();
+    // Start the hide timer on mount
+    hideTimerRef.current = setTimeout(() => {
+      setShowCounter(false);
+    }, 10000);
     return () => {
       if (hideTimerRef.current) {
         clearTimeout(hideTimerRef.current);
       }
     };
-  }, [resetHideTimer]);
+  }, []);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -126,12 +128,6 @@ export function PhotoCarousel({ tripRef }: PhotoCarouselProps) {
         tabIndex={0}
         onKeyDown={handleKeyDown}
         gap={0}
-        style={{
-          // width: isMobile ? "100vw" : "100%",
-          // maxWidth: isMobile ? "none" : MAX_WIDTH,
-          // // marginLeft: isMobile ? "calc(-50vw + 50%)" : 0,
-          // // marginRight: isMobile ? "calc(-50vw + 50%)" : 0,
-        }}
       >
         {/* Image container with arrows */}
         <div

@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useLazyLoadQuery, useRelayEnvironment, fetchQuery } from "react-relay";
 import { TextTitle1, TextTitle3, TextBody } from "@coinbase/cds-web/typography";
 import { Box, VStack } from "@coinbase/cds-web/layout";
@@ -27,13 +27,13 @@ function parseGeometry(geojsonString: string | null | undefined): Feature<LineSt
 
 export function TripsList() {
   const environment = useRelayEnvironment();
-  const [, setRefreshedAt] = useState(Date.now());
+  const [, setRefreshCount] = useState(0);
 
-  const handleUploadComplete = useCallback(() => {
+  const handleUploadComplete = () => {
     fetchQuery(environment, TripsQueryNode, { first: 10 }, { fetchPolicy: "network-only" })
       .toPromise()
-      .then(() => setRefreshedAt(Date.now()));
-  }, [environment]);
+      .then(() => setRefreshCount((c) => c + 1));
+  };
 
   const data = useLazyLoadQuery<TripsQueryQuery>(
     TripsQueryNode,
