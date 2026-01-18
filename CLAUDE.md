@@ -62,13 +62,22 @@ Client Apps (web/, mobile/)
 ## Key Patterns
 
 ### GraphQL with Relay
-- Queries live in `apps/*/graphql/*.ts` using `graphql` tagged template
 - Run `npm run relay` to generate types in `__generated__/` folders
-- Import generated query and use with `useLazyLoadQuery`
-- **Inline fragments in `useFragment`**: Do not extract fragment definitions to variables. Pass the `graphql` tagged template directly to `useFragment`.
+- **Inline all GraphQL**: Pass the `graphql` tagged template directly to `useLazyLoadQuery` and `useFragment`. Do not extract to variables.
 
 ```tsx
 // ❌ BAD - Don't extract to a variable
+const MyQuery = graphql`
+  query MyComponentQuery($id: ID!) { ... }
+`;
+const data = useLazyLoadQuery(MyQuery, { id });
+
+// ✅ GOOD - Inline the query
+const data = useLazyLoadQuery<MyComponentQuery>(graphql`
+  query MyComponentQuery($id: ID!) { ... }
+`, { id });
+
+// ❌ BAD - Don't extract fragments either
 const MyFragment = graphql`
   fragment MyComponent_data on MyType { ... }
 `;
@@ -78,6 +87,12 @@ const data = useFragment(MyFragment, ref);
 const data = useFragment(graphql`
   fragment MyComponent_data on MyType { ... }
 `, ref);
+```
+
+- For `fetchQuery` or other APIs that need the compiled query node, import from `__generated__`:
+```tsx
+import MyComponentQueryNode from "./__generated__/MyComponentQuery.graphql";
+fetchQuery(environment, MyComponentQueryNode, { id });
 ```
 
 ### Authentication

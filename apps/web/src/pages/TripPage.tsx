@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useLazyLoadQuery } from "react-relay";
+import { graphql, useLazyLoadQuery } from "react-relay";
 import { TextTitle1, TextTitle3, TextBody, TextLabel2, Link } from "@coinbase/cds-web/typography";
 import { Box, HStack, VStack, Grid } from "@coinbase/cds-web/layout";
 import { Tag } from "@coinbase/cds-web/tag";
@@ -11,8 +11,7 @@ import { PhotoCarousel } from "../components/PhotoCarousel";
 import { GpxUpload } from "../components/GpxUpload";
 import { SegmentList } from "../components/SegmentList";
 import { useAuth } from "../lib/AuthContext";
-import type { TripQueryWebQuery } from "../graphql/__generated__/TripQueryWebQuery.graphql";
-import TripQueryNode from "../graphql/__generated__/TripQueryWebQuery.graphql";
+import type { TripPageWebQuery } from "./__generated__/TripPageWebQuery.graphql";
 import type { Feature, LineString, MultiLineString } from "geojson";
 
 function TripContent({
@@ -24,11 +23,41 @@ function TripContent({
 }) {
   const { user } = useAuth();
   const [fetchKey, setFetchKey] = useState(0);
-  const data = useLazyLoadQuery<TripQueryWebQuery>(
-    TripQueryNode,
-    { username, slug: tripSlug },
-    { fetchPolicy: "store-and-network", fetchKey }
-  );
+  const data = useLazyLoadQuery<TripPageWebQuery>(graphql`
+    query TripPageWebQuery($username: String!, $slug: String!) {
+      profilesCollection(filter: { username: { eq: $username } }, first: 1) {
+        edges {
+          node {
+            id
+            username
+            avatar_url
+            tripsCollection(filter: { slug: { eq: $slug } }, first: 1) {
+              edges {
+                node {
+                  id
+                  name
+                  slug
+                  description
+                  is_published
+                  created_at
+                  start_date
+                  end_date
+                  trips_summary_geometry_geojson
+                  bounds_min_lat
+                  bounds_min_lng
+                  bounds_max_lat
+                  bounds_max_lng
+                  user_id
+                  ...PhotoCarousel_trip
+                  ...SegmentList_trip
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `, { username, slug: tripSlug }, { fetchPolicy: "store-and-network", fetchKey });
 
   const profile = data.profilesCollection?.edges?.[0]?.node;
   const trip = profile?.tripsCollection?.edges?.[0]?.node;

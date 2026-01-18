@@ -2,13 +2,13 @@ import { useState } from "react";
 import { FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useLazyLoadQuery, useRelayEnvironment, fetchQuery } from "react-relay";
+import { graphql, useLazyLoadQuery, useRelayEnvironment, fetchQuery } from "react-relay";
 import { Box, VStack } from "@coinbase/cds-mobile/layout";
 import { TextTitle3 } from "@coinbase/cds-mobile/typography/TextTitle3";
 import { TextBody } from "@coinbase/cds-mobile/typography/TextBody";
 import { Pressable } from "@coinbase/cds-mobile/system/Pressable";
-import type { queriesTripsListQuery } from "@/graphql/__generated__/queriesTripsListQuery.graphql";
-import TripsListQueryNode from "@/graphql/__generated__/queriesTripsListQuery.graphql";
+import type { TripsListMobileQuery } from "./__generated__/TripsListMobileQuery.graphql";
+import TripsListMobileQueryNode from "./__generated__/TripsListMobileQuery.graphql";
 import { TripMap } from "./TripMap";
 import { GpxUpload } from "./GpxUpload";
 import { MainStackParamList } from "@/navigation/types";
@@ -37,16 +37,35 @@ export function TripsList() {
   const [refreshedAt, setRefreshedAt] = useState(Date.now());
 
   const handleUploadComplete = () => {
-    fetchQuery(environment, TripsListQueryNode, { first: 10 }, { fetchPolicy: "network-only" })
+    fetchQuery(environment, TripsListMobileQueryNode, { first: 10 }, { fetchPolicy: "network-only" })
       .toPromise()
       .then(() => setRefreshedAt(Date.now()));
   };
 
-  const data = useLazyLoadQuery<queriesTripsListQuery>(
-    TripsListQueryNode,
-    { first: 10 },
-    { fetchPolicy: "store-and-network" }
-  );
+  const data = useLazyLoadQuery<TripsListMobileQuery>(graphql`
+    query TripsListMobileQuery($first: Int!) {
+      tripsCollection(first: $first) {
+        edges {
+          node {
+            id
+            name
+            slug
+            description
+            is_published
+            created_at
+            trips_summary_geometry_geojson
+            bounds_min_lat
+            bounds_min_lng
+            bounds_max_lat
+            bounds_max_lng
+            profiles {
+              username
+            }
+          }
+        }
+      }
+    }
+  `, { first: 10 }, { fetchPolicy: "store-and-network" });
 
   const trips = data.tripsCollection?.edges ?? [];
 
