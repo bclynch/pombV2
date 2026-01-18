@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<eb1fb5f057df6e3a84cb13ae14a216d0>>
+ * @generated SignedSource<<de0794d1932a940d661f213c1a392543>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,10 +9,10 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from 'relay-runtime';
-export type ProfileQueryMobileQuery$variables = {
+export type ProfileScreenMobileQuery$variables = {
   username: string;
 };
-export type ProfileQueryMobileQuery$data = {
+export type ProfileScreenMobileQuery$data = {
   readonly profilesCollection: {
     readonly edges: ReadonlyArray<{
       readonly node: {
@@ -42,9 +42,9 @@ export type ProfileQueryMobileQuery$data = {
     }>;
   } | null | undefined;
 };
-export type ProfileQueryMobileQuery = {
-  response: ProfileQueryMobileQuery$data;
-  variables: ProfileQueryMobileQuery$variables;
+export type ProfileScreenMobileQuery = {
+  response: ProfileScreenMobileQuery$data;
+  variables: ProfileScreenMobileQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -270,7 +270,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "ProfileQueryMobileQuery",
+    "name": "ProfileScreenMobileQuery",
     "selections": [
       {
         "alias": null,
@@ -307,10 +307,10 @@ return {
                     ],
                     "concreteType": "tripsConnection",
                     "kind": "LinkedField",
-                    "name": "__Profile_tripsCollection_connection",
+                    "name": "__ProfileScreen_tripsCollection_connection",
                     "plural": false,
                     "selections": (v7/*: any*/),
-                    "storageKey": "__Profile_tripsCollection_connection(orderBy:[{\"created_at\":\"DescNullsLast\"}])"
+                    "storageKey": "__ProfileScreen_tripsCollection_connection(orderBy:[{\"created_at\":\"DescNullsLast\"}])"
                   }
                 ],
                 "storageKey": null
@@ -329,7 +329,7 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "ProfileQueryMobileQuery",
+    "name": "ProfileScreenMobileQuery",
     "selections": [
       {
         "alias": null,
@@ -376,7 +376,7 @@ return {
                       "orderBy"
                     ],
                     "handle": "connection",
-                    "key": "Profile_tripsCollection",
+                    "key": "ProfileScreen_tripsCollection",
                     "kind": "LinkedHandle",
                     "name": "tripsCollection"
                   }
@@ -392,7 +392,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "0041c6d7d4e1506c0135fec16eb95a5a",
+    "cacheID": "7a81c38c2f292d10342df46c99b7b414",
     "id": null,
     "metadata": {
       "connection": [
@@ -404,13 +404,13 @@ return {
         }
       ]
     },
-    "name": "ProfileQueryMobileQuery",
+    "name": "ProfileScreenMobileQuery",
     "operationKind": "query",
-    "text": "query ProfileQueryMobileQuery(\n  $username: String!\n) {\n  profilesCollection(filter: {username: {eq: $username}}, first: 1) {\n    edges {\n      node {\n        id\n        username\n        avatar_url\n        bio\n        tripsCollection(first: 50, orderBy: [{created_at: DescNullsLast}]) {\n          edges {\n            node {\n              id\n              name\n              slug\n              description\n              is_published\n              created_at\n              start_date\n              trips_summary_geometry_geojson\n              bounds_min_lat\n              bounds_min_lng\n              bounds_max_lat\n              bounds_max_lng\n              __typename\n            }\n            cursor\n          }\n          pageInfo {\n            endCursor\n            hasNextPage\n          }\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query ProfileScreenMobileQuery(\n  $username: String!\n) {\n  profilesCollection(filter: {username: {eq: $username}}, first: 1) {\n    edges {\n      node {\n        id\n        username\n        avatar_url\n        bio\n        tripsCollection(first: 50, orderBy: [{created_at: DescNullsLast}]) {\n          edges {\n            node {\n              id\n              name\n              slug\n              description\n              is_published\n              created_at\n              start_date\n              trips_summary_geometry_geojson\n              bounds_min_lat\n              bounds_min_lng\n              bounds_max_lat\n              bounds_max_lng\n              __typename\n            }\n            cursor\n          }\n          pageInfo {\n            endCursor\n            hasNextPage\n          }\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "c83315923b6a9be5dc898b57746c9efc";
+(node as any).hash = "b060240f32f91a22c711a64326ffc945";
 
 export default node;

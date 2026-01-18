@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e32ed4f707bd575b6356b263f83811a5>>
+ * @generated SignedSource<<9dc7b26c47fd0f8343c0bc62ef1fb204>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,10 +9,10 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from 'relay-runtime';
-export type ProfileQueryWebQuery$variables = {
+export type ProfilePageWebQuery$variables = {
   username: string;
 };
-export type ProfileQueryWebQuery$data = {
+export type ProfilePageWebQuery$data = {
   readonly profilesCollection: {
     readonly edges: ReadonlyArray<{
       readonly node: {
@@ -42,9 +42,9 @@ export type ProfileQueryWebQuery$data = {
     }>;
   } | null | undefined;
 };
-export type ProfileQueryWebQuery = {
-  response: ProfileQueryWebQuery$data;
-  variables: ProfileQueryWebQuery$variables;
+export type ProfilePageWebQuery = {
+  response: ProfilePageWebQuery$data;
+  variables: ProfilePageWebQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -270,7 +270,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "ProfileQueryWebQuery",
+    "name": "ProfilePageWebQuery",
     "selections": [
       {
         "alias": null,
@@ -307,10 +307,10 @@ return {
                     ],
                     "concreteType": "tripsConnection",
                     "kind": "LinkedField",
-                    "name": "__Profile_tripsCollection_connection",
+                    "name": "__ProfilePage_tripsCollection_connection",
                     "plural": false,
                     "selections": (v7/*: any*/),
-                    "storageKey": "__Profile_tripsCollection_connection(orderBy:[{\"created_at\":\"DescNullsLast\"}])"
+                    "storageKey": "__ProfilePage_tripsCollection_connection(orderBy:[{\"created_at\":\"DescNullsLast\"}])"
                   }
                 ],
                 "storageKey": null
@@ -329,7 +329,7 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "ProfileQueryWebQuery",
+    "name": "ProfilePageWebQuery",
     "selections": [
       {
         "alias": null,
@@ -376,7 +376,7 @@ return {
                       "orderBy"
                     ],
                     "handle": "connection",
-                    "key": "Profile_tripsCollection",
+                    "key": "ProfilePage_tripsCollection",
                     "kind": "LinkedHandle",
                     "name": "tripsCollection"
                   }
@@ -392,7 +392,7 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1dbe0f487218f6279586d2b2c57a73a5",
+    "cacheID": "ba9e375647f50bbe1d4ce27a09c3fa05",
     "id": null,
     "metadata": {
       "connection": [
@@ -404,13 +404,13 @@ return {
         }
       ]
     },
-    "name": "ProfileQueryWebQuery",
+    "name": "ProfilePageWebQuery",
     "operationKind": "query",
-    "text": "query ProfileQueryWebQuery(\n  $username: String!\n) {\n  profilesCollection(filter: {username: {eq: $username}}, first: 1) {\n    edges {\n      node {\n        id\n        username\n        avatar_url\n        bio\n        tripsCollection(first: 50, orderBy: [{created_at: DescNullsLast}]) {\n          edges {\n            node {\n              id\n              name\n              slug\n              description\n              is_published\n              created_at\n              start_date\n              trips_summary_geometry_geojson\n              bounds_min_lat\n              bounds_min_lng\n              bounds_max_lat\n              bounds_max_lng\n              __typename\n            }\n            cursor\n          }\n          pageInfo {\n            endCursor\n            hasNextPage\n          }\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query ProfilePageWebQuery(\n  $username: String!\n) {\n  profilesCollection(filter: {username: {eq: $username}}, first: 1) {\n    edges {\n      node {\n        id\n        username\n        avatar_url\n        bio\n        tripsCollection(first: 50, orderBy: [{created_at: DescNullsLast}]) {\n          edges {\n            node {\n              id\n              name\n              slug\n              description\n              is_published\n              created_at\n              start_date\n              trips_summary_geometry_geojson\n              bounds_min_lat\n              bounds_min_lng\n              bounds_max_lat\n              bounds_max_lng\n              __typename\n            }\n            cursor\n          }\n          pageInfo {\n            endCursor\n            hasNextPage\n          }\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "cdfb3d1166234f097c6688ef9a2f822c";
+(node as any).hash = "04b3839fd865675701b97f90222ce934";
 
 export default node;

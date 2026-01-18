@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a15ea9232a7e893a08ac390f46f6b257>>
+ * @generated SignedSource<<f3eb13ab6265061ec9c07cb65828ded3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,10 +9,10 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from 'relay-runtime';
-export type queriesTripsListQuery$variables = {
+export type TripsListWebQuery$variables = {
   first: number;
 };
-export type queriesTripsListQuery$data = {
+export type TripsListWebQuery$data = {
   readonly tripsCollection: {
     readonly edges: ReadonlyArray<{
       readonly node: {
@@ -25,18 +25,14 @@ export type queriesTripsListQuery$data = {
         readonly id: any;
         readonly is_published: boolean | null | undefined;
         readonly name: string;
-        readonly profiles: {
-          readonly username: string | null | undefined;
-        } | null | undefined;
-        readonly slug: string;
         readonly trips_summary_geometry_geojson: string | null | undefined;
       };
     }>;
   } | null | undefined;
 };
-export type queriesTripsListQuery = {
-  response: queriesTripsListQuery$data;
-  variables: queriesTripsListQuery$variables;
+export type TripsListWebQuery = {
+  response: TripsListWebQuery$data;
+  variables: TripsListWebQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -96,13 +92,6 @@ v1 = [
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "slug",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
                 "name": "description",
                 "storageKey": null
               },
@@ -154,24 +143,6 @@ v1 = [
                 "kind": "ScalarField",
                 "name": "bounds_max_lng",
                 "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "profiles",
-                "kind": "LinkedField",
-                "name": "profiles",
-                "plural": false,
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "username",
-                    "storageKey": null
-                  }
-                ],
-                "storageKey": null
               }
             ],
             "storageKey": null
@@ -188,7 +159,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "queriesTripsListQuery",
+    "name": "TripsListWebQuery",
     "selections": (v1/*: any*/),
     "type": "Query",
     "abstractKey": null
@@ -197,20 +168,20 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "queriesTripsListQuery",
+    "name": "TripsListWebQuery",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "cc407f5279d6e6884f0042c468fe82d6",
+    "cacheID": "a558608ddd2bd34b55e003741ec5b791",
     "id": null,
     "metadata": {},
-    "name": "queriesTripsListQuery",
+    "name": "TripsListWebQuery",
     "operationKind": "query",
-    "text": "query queriesTripsListQuery(\n  $first: Int!\n) {\n  tripsCollection(first: $first) {\n    edges {\n      node {\n        id\n        name\n        slug\n        description\n        is_published\n        created_at\n        trips_summary_geometry_geojson\n        bounds_min_lat\n        bounds_min_lng\n        bounds_max_lat\n        bounds_max_lng\n        profiles {\n          username\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query TripsListWebQuery(\n  $first: Int!\n) {\n  tripsCollection(first: $first) {\n    edges {\n      node {\n        id\n        name\n        description\n        is_published\n        created_at\n        trips_summary_geometry_geojson\n        bounds_min_lat\n        bounds_min_lng\n        bounds_max_lat\n        bounds_max_lng\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "fea419d5b551cbce20d2c102919667dc";
+(node as any).hash = "0121161661b9b5e39464deaf0825bd52";
 
 export default node;

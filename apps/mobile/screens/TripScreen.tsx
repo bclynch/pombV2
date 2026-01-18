@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ScrollView } from "react-native";
-import { useLazyLoadQuery } from "react-relay";
+import { graphql, useLazyLoadQuery } from "react-relay";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackScreenProps, NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Box, VStack, HStack } from "@coinbase/cds-mobile/layout";
@@ -18,8 +18,7 @@ import { PhotoCarousel } from "@/components/PhotoCarousel";
 import { SegmentList } from "@/components/SegmentList";
 import { useAuth } from "@/lib/AuthContext";
 import { MainStackParamList } from "@/navigation/types";
-import type { queriesTripQuery } from "@/graphql/__generated__/queriesTripQuery.graphql";
-import TripQueryNode from "@/graphql/__generated__/queriesTripQuery.graphql";
+import type { TripScreenMobileQuery } from "./__generated__/TripScreenMobileQuery.graphql";
 import type { Feature, LineString, MultiLineString } from "geojson";
 
 type Props = NativeStackScreenProps<MainStackParamList, "Trip">;
@@ -35,11 +34,41 @@ function TripContent({
   const { user } = useAuth();
   const [fetchKey, setFetchKey] = useState(0);
 
-  const data = useLazyLoadQuery<queriesTripQuery>(
-    TripQueryNode,
-    { username, slug: tripSlug },
-    { fetchPolicy: "store-and-network", fetchKey }
-  );
+  const data = useLazyLoadQuery<TripScreenMobileQuery>(graphql`
+    query TripScreenMobileQuery($username: String!, $slug: String!) {
+      profilesCollection(filter: { username: { eq: $username } }, first: 1) {
+        edges {
+          node {
+            id
+            username
+            avatar_url
+            tripsCollection(filter: { slug: { eq: $slug } }, first: 1) {
+              edges {
+                node {
+                  id
+                  name
+                  slug
+                  description
+                  is_published
+                  created_at
+                  start_date
+                  end_date
+                  trips_summary_geometry_geojson
+                  bounds_min_lat
+                  bounds_min_lng
+                  bounds_max_lat
+                  bounds_max_lng
+                  user_id
+                  ...PhotoCarouselMobile_trip
+                  ...SegmentListMobile_trip
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `, { username, slug: tripSlug }, { fetchPolicy: "store-and-network", fetchKey });
 
   const profile = data.profilesCollection?.edges?.[0]?.node;
   const trip = profile?.tripsCollection?.edges?.[0]?.node;

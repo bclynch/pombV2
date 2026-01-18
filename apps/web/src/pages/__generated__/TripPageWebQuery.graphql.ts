@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<684c1daea09511c35860b958343bb1cf>>
+ * @generated SignedSource<<060eea58364d76bdeecd57d525f7df8f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,11 +10,11 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type queriesTripQuery$variables = {
+export type TripPageWebQuery$variables = {
   slug: string;
   username: string;
 };
-export type queriesTripQuery$data = {
+export type TripPageWebQuery$data = {
   readonly profilesCollection: {
     readonly edges: ReadonlyArray<{
       readonly node: {
@@ -37,7 +37,7 @@ export type queriesTripQuery$data = {
               readonly start_date: any | null | undefined;
               readonly trips_summary_geometry_geojson: string | null | undefined;
               readonly user_id: any;
-              readonly " $fragmentSpreads": FragmentRefs<"PhotoCarouselMobile_trip" | "SegmentListMobile_trip">;
+              readonly " $fragmentSpreads": FragmentRefs<"PhotoCarousel_trip" | "SegmentList_trip">;
             };
           }>;
         } | null | undefined;
@@ -46,9 +46,9 @@ export type queriesTripQuery$data = {
     }>;
   } | null | undefined;
 };
-export type queriesTripQuery = {
-  response: queriesTripQuery$data;
-  variables: queriesTripQuery$variables;
+export type TripPageWebQuery = {
+  response: TripPageWebQuery$data;
+  variables: TripPageWebQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -227,7 +227,7 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "queriesTripQuery",
+    "name": "TripPageWebQuery",
     "selections": [
       {
         "alias": null,
@@ -297,12 +297,12 @@ return {
                               {
                                 "args": null,
                                 "kind": "FragmentSpread",
-                                "name": "PhotoCarouselMobile_trip"
+                                "name": "PhotoCarousel_trip"
                               },
                               {
                                 "args": null,
                                 "kind": "FragmentSpread",
-                                "name": "SegmentListMobile_trip"
+                                "name": "SegmentList_trip"
                               }
                             ],
                             "storageKey": null
@@ -333,7 +333,7 @@ return {
       (v0/*: any*/)
     ],
     "kind": "Operation",
-    "name": "queriesTripQuery",
+    "name": "TripPageWebQuery",
     "selections": [
       {
         "alias": null,
@@ -593,16 +593,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f5727ac001c31f331fd9822afe50ffb6",
+    "cacheID": "38c9d5d56d6fa39ae0bf6189385258df",
     "id": null,
     "metadata": {},
-    "name": "queriesTripQuery",
+    "name": "TripPageWebQuery",
     "operationKind": "query",
-    "text": "query queriesTripQuery(\n  $username: String!\n  $slug: String!\n) {\n  profilesCollection(filter: {username: {eq: $username}}, first: 1) {\n    edges {\n      node {\n        id\n        username\n        avatar_url\n        tripsCollection(filter: {slug: {eq: $slug}}, first: 1) {\n          edges {\n            node {\n              id\n              name\n              slug\n              description\n              is_published\n              created_at\n              start_date\n              end_date\n              trips_summary_geometry_geojson\n              bounds_min_lat\n              bounds_min_lng\n              bounds_max_lat\n              bounds_max_lng\n              user_id\n              ...PhotoCarouselMobile_trip\n              ...SegmentListMobile_trip\n            }\n          }\n        }\n      }\n    }\n  }\n}\n\nfragment PhotoCarouselMobile_trip on trips {\n  photosCollection(first: 100, orderBy: [{captured_at: AscNullsLast}]) {\n    edges {\n      node {\n        id\n        r2_key_thumb\n        r2_key_large\n        blurhash\n        captured_at\n      }\n    }\n  }\n}\n\nfragment SegmentListMobile_trip on trips {\n  id\n  trip_segmentsCollection(orderBy: [{sort_order: AscNullsLast}]) {\n    edges {\n      node {\n        id\n        name\n        description\n        sort_order\n        created_at\n        trip_uploadsCollection {\n          edges {\n            node {\n              id\n              filename\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query TripPageWebQuery(\n  $username: String!\n  $slug: String!\n) {\n  profilesCollection(filter: {username: {eq: $username}}, first: 1) {\n    edges {\n      node {\n        id\n        username\n        avatar_url\n        tripsCollection(filter: {slug: {eq: $slug}}, first: 1) {\n          edges {\n            node {\n              id\n              name\n              slug\n              description\n              is_published\n              created_at\n              start_date\n              end_date\n              trips_summary_geometry_geojson\n              bounds_min_lat\n              bounds_min_lng\n              bounds_max_lat\n              bounds_max_lng\n              user_id\n              ...PhotoCarousel_trip\n              ...SegmentList_trip\n            }\n          }\n        }\n      }\n    }\n  }\n}\n\nfragment PhotoCarousel_trip on trips {\n  photosCollection(first: 100, orderBy: [{captured_at: AscNullsLast}]) {\n    edges {\n      node {\n        id\n        r2_key_thumb\n        r2_key_large\n        blurhash\n        captured_at\n      }\n    }\n  }\n}\n\nfragment SegmentList_trip on trips {\n  id\n  trip_segmentsCollection(orderBy: [{sort_order: AscNullsLast}]) {\n    edges {\n      node {\n        id\n        name\n        description\n        sort_order\n        created_at\n        trip_uploadsCollection {\n          edges {\n            node {\n              id\n              filename\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "842f2fe3912cbe58a8a8cd55bd8c5faf";
+(node as any).hash = "54535261eb6cf13b90709bd3ebf794a4";
 
 export default node;

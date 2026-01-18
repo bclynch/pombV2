@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { ScrollView, Alert, Modal as RNModal } from "react-native";
-import { useLazyLoadQuery, useMutation } from "react-relay";
+import { graphql, useLazyLoadQuery, useMutation } from "react-relay";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackScreenProps, NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Button } from "@coinbase/cds-mobile/buttons/Button";
@@ -17,8 +17,7 @@ import { AppHeader } from "@/components/AppHeader";
 import { AvatarUpload } from "@/components/AvatarUpload";
 import { useAuth } from "@/lib/AuthContext";
 import { MainStackParamList } from "@/navigation/types";
-import type { ProfileQueryMobileQuery } from "@/graphql/__generated__/ProfileQueryMobileQuery.graphql";
-import ProfileQueryNode from "@/graphql/__generated__/ProfileQueryMobileQuery.graphql";
+import type { ProfileScreenMobileQuery } from "./__generated__/ProfileScreenMobileQuery.graphql";
 import CreateTripMutationNode from "@/graphql/__generated__/mutationsCreateTripMutation.graphql";
 
 type Props = NativeStackScreenProps<MainStackParamList, "Profile">;
@@ -31,11 +30,39 @@ function ProfileContent({ username }: { username: string }) {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [fetchKey, setFetchKey] = useState(0);
 
-  const data = useLazyLoadQuery<ProfileQueryMobileQuery>(
-    ProfileQueryNode,
-    { username },
-    { fetchPolicy: "store-and-network", fetchKey }
-  );
+  const data = useLazyLoadQuery<ProfileScreenMobileQuery>(graphql`
+    query ProfileScreenMobileQuery($username: String!) {
+      profilesCollection(filter: { username: { eq: $username } }, first: 1) {
+        edges {
+          node {
+            id
+            username
+            avatar_url
+            bio
+            tripsCollection(first: 50, orderBy: [{ created_at: DescNullsLast }])
+              @connection(key: "ProfileScreen_tripsCollection") {
+              edges {
+                node {
+                  id
+                  name
+                  slug
+                  description
+                  is_published
+                  created_at
+                  start_date
+                  trips_summary_geometry_geojson
+                  bounds_min_lat
+                  bounds_min_lng
+                  bounds_max_lat
+                  bounds_max_lng
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `, { username }, { fetchPolicy: "store-and-network", fetchKey });
 
   const [commitCreateTrip, isCreating] = useMutation(CreateTripMutationNode);
 

@@ -1,9 +1,9 @@
 import { useCallback, useState } from "react";
-import { useLazyLoadQuery, useRelayEnvironment, fetchQuery } from "react-relay";
+import { graphql, useLazyLoadQuery, useRelayEnvironment, fetchQuery } from "react-relay";
 import { TextTitle1, TextTitle3, TextBody } from "@coinbase/cds-web/typography";
 import { Box, VStack } from "@coinbase/cds-web/layout";
-import type { TripsQueryQuery } from "../graphql/__generated__/TripsQueryQuery.graphql";
-import TripsQueryNode from "../graphql/__generated__/TripsQueryQuery.graphql";
+import type { TripsListWebQuery } from "./__generated__/TripsListWebQuery.graphql";
+import TripsListWebQueryNode from "./__generated__/TripsListWebQuery.graphql";
 import { TripMap } from "./TripMap";
 import { GpxUpload } from "./GpxUpload";
 import type { Feature, LineString, MultiLineString } from "geojson";
@@ -30,16 +30,31 @@ export function TripsList() {
   const [, setRefreshedAt] = useState(Date.now());
 
   const handleUploadComplete = useCallback(() => {
-    fetchQuery(environment, TripsQueryNode, { first: 10 }, { fetchPolicy: "network-only" })
+    fetchQuery(environment, TripsListWebQueryNode, { first: 10 }, { fetchPolicy: "network-only" })
       .toPromise()
       .then(() => setRefreshedAt(Date.now()));
   }, [environment]);
 
-  const data = useLazyLoadQuery<TripsQueryQuery>(
-    TripsQueryNode,
-    { first: 10 },
-    { fetchPolicy: "store-and-network" }
-  );
+  const data = useLazyLoadQuery<TripsListWebQuery>(graphql`
+    query TripsListWebQuery($first: Int!) {
+      tripsCollection(first: $first) {
+        edges {
+          node {
+            id
+            name
+            description
+            is_published
+            created_at
+            trips_summary_geometry_geojson
+            bounds_min_lat
+            bounds_min_lng
+            bounds_max_lat
+            bounds_max_lng
+          }
+        }
+      }
+    }
+  `, { first: 10 }, { fetchPolicy: "store-and-network" });
 
   const trips = data.tripsCollection?.edges ?? [];
 
