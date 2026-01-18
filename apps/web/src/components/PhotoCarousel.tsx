@@ -6,22 +6,6 @@ import type { PhotoCarousel_trip$key } from "./__generated__/PhotoCarousel_trip.
 
 const R2_PUBLIC_URL = import.meta.env.VITE_R2_PUBLIC_URL || "";
 
-const PhotoCarouselFragment = graphql`
-  fragment PhotoCarousel_trip on trips {
-    photosCollection(first: 100, orderBy: [{ captured_at: AscNullsLast }]) {
-      edges {
-        node {
-          id
-          r2_key_thumb
-          r2_key_large
-          blurhash
-          captured_at
-        }
-      }
-    }
-  }
-`;
-
 type PhotoCarouselProps = {
   tripRef: PhotoCarousel_trip$key;
 };
@@ -30,7 +14,21 @@ const MAX_WIDTH = 468;
 const ASPECT_RATIO = 1.2;
 
 export function PhotoCarousel({ tripRef }: PhotoCarouselProps) {
-  const data = useFragment(PhotoCarouselFragment, tripRef);
+  const data = useFragment(graphql`
+    fragment PhotoCarousel_trip on trips {
+      photosCollection(first: 100, orderBy: [{ captured_at: AscNullsLast }]) {
+        edges {
+          node {
+            id
+            r2_key_thumb
+            r2_key_large
+            blurhash
+            captured_at
+          }
+        }
+      }
+    }
+  `, tripRef);
   const photos = data.photosCollection?.edges?.map((e) => e.node) ?? [];
 
   const [activeIndex, setActiveIndex] = useState(0);

@@ -12,38 +12,36 @@ import type { SegmentListMobile_trip$key, SegmentListMobile_trip$data } from "./
 
 type Segment = NonNullable<SegmentListMobile_trip$data['trip_segmentsCollection']>['edges'][number]['node'];
 
-const SegmentListFragment = graphql`
-  fragment SegmentListMobile_trip on trips {
-    id
-    trip_segmentsCollection(orderBy: [{ sort_order: AscNullsLast }]) {
-      edges {
-        node {
-          id
-          name
-          description
-          sort_order
-          created_at
-          trip_uploadsCollection {
-            edges {
-              node {
-                id
-                filename
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
 type SegmentListProps = {
   tripRef: SegmentListMobile_trip$key;
   onSegmentsChange?: () => void;
 };
 
 export function SegmentList({ tripRef, onSegmentsChange }: SegmentListProps) {
-  const data = useFragment(SegmentListFragment, tripRef);
+  const data = useFragment(graphql`
+    fragment SegmentListMobile_trip on trips {
+      id
+      trip_segmentsCollection(orderBy: [{ sort_order: AscNullsLast }]) {
+        edges {
+          node {
+            id
+            name
+            description
+            sort_order
+            created_at
+            trip_uploadsCollection {
+              edges {
+                node {
+                  id
+                  filename
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `, tripRef);
   const tripId = data.id;
   const segments = data.trip_segmentsCollection?.edges?.map((e) => e.node) ?? [];
 
